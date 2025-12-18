@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+     margin: 0;
+  padding: 0;
+    height: 100%;
+  overflow: hidden; /* чтобы скролл глобальный не появлялся */
+}
+
+header{
+  height: 64px;
+  backdrop-filter: blur(10px);
+}
