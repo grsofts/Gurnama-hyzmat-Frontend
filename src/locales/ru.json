@@ -1,0 +1,32 @@
+{
+  "menu": {
+    "banners": "Баннеры",
+    "projects": "Проекты",
+    "services": "Услуги",
+    "certificates": "Сертификаты",
+    "partners": "Партнеры",
+    "users": "Пользователи"
+  },
+  "actions": {
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "view": "Просмотр",
+    "set_active": "Активировать",
+    "set_inactive": "Деактивировать"
+  },
+  "buttons":{
+    "add":"Добавить"
+  },
+  "column":{
+    "id": "ID",
+    "name": "Название",
+    "description": "Описание",
+    "image": "Изображение",
+    "title": "Заголовок",
+    "status": "Статус",
+    "created_at": "Создано",
+    "action" : "Действие",
+    "updated_at": "Обновлено"
+  },
+  "showmore": "Показать больше"
+}

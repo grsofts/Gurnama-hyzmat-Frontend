@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { theme as antdTheme } from "antd";
+// import { ThemeProvider as MuiThemeProvider, createTheme } from "@mui/material";
 
 const ThemeContext = createContext(null);
 
@@ -19,7 +20,8 @@ export const ThemeProvider = ({ children }) => {
       ? antdTheme.darkAlgorithm
       : antdTheme.defaultAlgorithm,
     token: {
-      colorPrimary: "#b80013",
+      colorPrimary: "#019de8",
+      fontFamily: 'Rubik, sans-serif',
       colorBgContainer: isDark ? "#1f1f1f" : "#fff",   // фон контейнеров
       colorBgElevated: isDark ? "#2a2a2a" : "#fff",    // фон карточек, Dropdown и т.д.
       colorText: isDark ? "#e5e5e5" : "#000",          // основной текст
@@ -28,9 +30,12 @@ export const ThemeProvider = ({ children }) => {
     },
   };
 
+  
+
+
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme, antdThemeConfig }}>
-      {children}
+        {children}
     </ThemeContext.Provider>
   );
 };

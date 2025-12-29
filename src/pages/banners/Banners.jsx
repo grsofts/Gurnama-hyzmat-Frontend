@@ -1,16 +1,23 @@
-import { Button, Table, Flex, Input, Space, Tag, Dropdown, Typography, Image } from "antd";
+import { Button, Table, Flex, Input, Space, Tag, Typography, Image, Card, Segmented, DatePicker, Menu, Dropdown } from "antd";
+
 import { useEffect, useState } from "react";
-import bannerService from "../../api/banners.service";
-import { EllipsisVertical, Pencil, PlusIcon, Trash } from "lucide-react";
+import bannersService from "../../api/banners.service";
+import { ActivitySquare, CircleCheck, CircleX, Download, EllipsisVertical, Filter, Pencil, Plus, PlusIcon, Trash } from "lucide-react";
 import Column from "antd/es/table/Column";
 import { formatDateTime } from '../../utils/utils'
+// import NewOrderModal from "./NewOrderModal";
+// import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import http from "../../api/http";
+import Spacer from "../../components/ui/Spacer";
 
 
 export default function Banners() {
     const [banners, setBanners] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+    const { t } = useTranslation();
+    // const [showModal, setShowModal] = useState(false);
+    // const navigate = useNavigate();
 
   const [ search, setSearch ] = useState('');
 
@@ -19,10 +26,10 @@ export default function Banners() {
   }
 
   useEffect( () => {
-    const loadBanners = async () => {
+    const loadOrders = async () => {
     try {
       setLoading(true);
-      const data = await bannerService.getBanners();
+      const data = await bannersService.getBanners();
       setBanners(data);
     } catch (err) {
       console.error("Ошибка загрузки баннеров", err);
@@ -31,44 +38,72 @@ export default function Banners() {
     }
   };
 
-  loadBanners();
+  loadOrders();
   }, []);
+  
+  // const [modalOpen, setModalOpen] = useState(false);
+
+const { RangePicker } = DatePicker;
 
 
   return (
-    <Flex className=" rounded-xl">
-        <Flex gap={"middle"} className="p-3 w-full" vertical>
-          <Flex gap={"large"} align={"center"}>
+    <Flex className="rounded-xl">
+        <Flex gap={"middle"} className="w-full" vertical>
+          {/* <NewOrderModal modalOpen={modalOpen} setModalOpen={setModalOpen} /> */}
+          <Card className="shadow-sm border-0 p-0" styles={{ body:{padding:16}}}>
+            <Flex gap={"large"} align={"center"}>
               <Typography.Title level={4} style={{ margin: 0 }} strong>
-                Bannerler
+               {t('menu.banners')}
               </Typography.Title>
-              <div className="flex-1"/>
-              <Input variant="filled" size="large" style={{ width: 300 }} allowClear type={"text"} placeholder="Gözleg.." value={search} onChange={searchData}/>
-              <Button size="large" color="primary" className="gap-0.5" variant="solid"><PlusIcon/><span>Täze banner goş</span></Button>
-          </Flex>
-          <Table size="small" bordered="true" dataSource={banners} loading={loading} showSorterTooltip={{ target: 'sorter-icon' }}>
-            <Column title="№" key="row_number" render={(_, __, index) => index + 1} />
-            <Column title="Surat" dataIndex="image" key="image" render={(url) => 
-              <Image src={http.defaults.baseURL + "/uploads" + url} alt="Banner" style={{ width: 100, height: 'auto', borderRadius: 8 }} />} />
-            <Column title="Ady" dataIndex="name" key="name" sorter={(a, b) => a.name.length - b.name.length} showSorterTooltip={{ title: 'Ady boýunça tertiple', placement: 'top', color: 'blue', target: 'full-header' }} />
-            <Column title="Title" dataIndex="title" key="title" />
-            <Column title="Dusundiris gysgaca" dataIndex="desc" key="description" />
-            <Column title="Status" dataIndex="is_active" key="is_active" render={(status) => (status ? <Tag color="#00b300" variant="outlined">Aktiw</Tag> : <Tag color="#ff4d4f" variant="outlined">Öçük</Tag>)} />
-            <Column title="Sort" dataIndex="sort_order" key="sort" />
-            <Column title="Doredildi" dataIndex="createdAt" key="created" render={(val) => formatDateTime(val)} />
-            <Column title="Üýtgedildi" dataIndex="updatedAt" key="updated" render={(val) => formatDateTime(val)} />
-            <Column title="Hereketler" key="actions" render={(_, record) => (
-               <Dropdown
+              <Spacer/>
+              <Input variant="filled" size="large" style={{ width: 300 }} allowClear type={"text"} placeholder="Search.." value={search} onChange={searchData}/>
+              <Button size="large" color="primary" className="gap-0.5 shadow-none" variant="solid"><Plus size={20}/><span>{t('buttons.add')}</span></Button>
+              {/* <Segmented size="large" options={['Все баннеры', 'Выполненные', 'Отмененные', 'Новые']} /> */}
+            </Flex>
+
+          </Card>
+          
+          {/* <Card className="shadow-sm border-0 p-0" styles={{ body:{padding:16}}}>
+            <Flex gap={"large"} align={"center"}>
+              
+              <Button type="text" color="default" size="large" variant="filled"><Filter size={16}/> Filter</Button>
+              <RangePicker type="text" variant="filled" size="large" style={{ width: 190 }} format={{format:'MMM D'}} placeholder={['Начальная дата', 'Конечная дата']} />
+
+              <Spacer/>
+
+              
+            </Flex>
+
+          </Card> */}
+          <Card className="shadow-sm border-0 p-0" styles={{ body:{padding:16}}}>
+
+          <Table size="small" className="" pagination={{ position: [ "bottomCenter"]}} dataSource={banners} loading={loading} showSorterTooltip={{ target: 'sorter-icon' }} >
+            <Column title="№" width={50} key="row_number" responsive={['md', 'lg', 'xl']} render={(_, __, index) => index + 1} />
+            <Column title={t('column.image')} dataIndex="image" width={120} key="image" alt="Banner" render={(img) => 
+              <Image src={`${http.defaults.baseURL}/uploads/${img}`} width={100} style={{ zIndex: 500, borderRadius: 8 }} preview onClick={(e) => e.stopPropagation} /> } />
+            <Column title={t('column.name')} dataIndex="name" key="name" alt="Banner" />
+            <Column title={t('column.title')} dataIndex="title" key="title" alt="Banner" />
+
+            <Column title={t('column.status')} dataIndex="is_active" key="is_active" render={(status) => (status ? <Tag color="#00b300" variant="outlined">Aktiw</Tag> : <Tag color="#ff4d4f" variant="outlined">Öçük</Tag>)} />
+            <Column title={t('column.created_at')} dataIndex="createdAt" key="createdAt" render={(createdAt) => formatDateTime(createdAt)} />
+            <Column title={t('column.action')} key="action" render={(record) => (
+              <Dropdown
                   menu={{
                   items: [
                     {
+                      key: "set_active",
+                      label: record.is_active ? t('actions.set_inactive') : t('actions.set_active'),
+                      icon: record.is_active ? <CircleX size={16}/> : <CircleCheck size={16}/>,
+                      danger: record.is_active ? true : false,
+                    },
+                    {
                       key: "edit",
-                      label: "Üýtgetmek",
+                      label: t('actions.edit'),
                       icon: <Pencil size={16}/>
                     },
                     {
                       key: "delete",
-                      label: "Ýok etmek",
+                      label: t('actions.delete'),
                       icon: <Trash size={16}/>,
                       danger: true,
                       disabled: banners.length === 1,
@@ -95,6 +130,7 @@ export default function Banners() {
                 </Dropdown>
             )} />
           </Table>
+          </Card>
         </Flex>
     </Flex>
   )

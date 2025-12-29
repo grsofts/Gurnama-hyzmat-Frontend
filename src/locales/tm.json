@@ -1,0 +1,32 @@
+{
+  "menu": {
+    "banners": "Bannerler",
+    "partners": "Partnýorlar",
+    "certificates": "Sertifikatlar",
+    "projects": "Edilen işler",
+    "services": "Hyzmatlar",
+    "users": "Ulanyjylar"
+  },
+  "showmore": "Has köp görkez",
+  "actions": {
+    "delete": "Ýok etmek",
+    "edit": "Üýtgetmek",
+    "view": "Görmek",
+    "set_active": "Aktiwleşdirmek",
+    "set_inactive": "Deaktiwleşdirmek"
+  },
+  "column": {
+    "id": "ID",
+    "name": "Ady",
+    "description": "Düşündiriş",
+    "image": "Surat",
+    "title": "Title",
+    "status": "Status",
+    "created_at": "Döredilen",
+    "action": "Hereket",
+    "updated_at": "Üýtgedilen"
+  },
+  "buttons": {
+    "add": "Täze goş"
+  }
+}

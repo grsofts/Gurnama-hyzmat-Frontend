@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/immutability */
 import React, { createContext, useState, useEffect } from 'react';
-
 import loginService from '../api/login.service';
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -24,8 +23,9 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             try {
                 // Проверяем валидность токена
-                // const response = await axios.get(`${API_URL}/auth/me`);
-                // setUser(response.data.user);
+                const response = await loginService.me();
+
+                setUser(response);
             } catch (error) {
                 // Если токен невалидный, очищаем
                 localStorage.removeItem('accessToken');
@@ -41,9 +41,8 @@ export const AuthProvider = ({ children }) => {
     const login = async (login, password) => {
         try {
             const response = await loginService.login({ login, password });
-            const { user } = response;
             
-            setUser(user);
+            setUser(response);
             return { success: true };
         } catch (error) {
             return { 

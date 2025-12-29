@@ -1,162 +1,78 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
-import Input from '../components/ui/Input';
 import './Login.css';
 import { UserIcon } from 'lucide-react';
+import { Flex, Form, Input, Button, Checkbox, Card } from 'antd';
+import Typography from 'antd/es/typography/Typography';
 
-// Иконки для инпутов
-const EmailIcon = () => (
-    <svg className="input-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-    </svg>
-);
 
-const PasswordIcon = () => (
-    <svg className="input-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-    </svg>
-);
+
 
 const Login = () => {
-    const [formData, setFormData] = useState({
-        email: 'admin',
-        password: 'admin'
-    });
-    const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(false);
-    
-    const { login } = useAuth();
     const navigate = useNavigate();
+    const { login } = useAuth();
+    const [username, setUsername] = useState("admin");
+    const [password, setPassword] = useState("admin");
 
-    const validateForm = () => {
-        const newErrors = {};
-        
-        // if (!formData.email) {
-        //     newErrors.email = 'Email обязателен';
-        // } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        //     newErrors.email = 'Неверный формат email';
-        // }
-        
-        if (!formData.password) {
-            newErrors.password = 'Пароль обязателен';
-        } else if (formData.password.length < 3) {
-            newErrors.password = 'Пароль должен быть не менее 6 символов';
-        }
-        
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+    const onSubmit = async () => {
+    const res = await login(username, password);
+    if (res.success) {
+      console.log('Login successful:', res);
+      
+      navigate("/banners", { replace: true });
+    }
+  };
+
+  const onFinish = values => {
+    console.log('Success:', values);
+    };
+    const onFinishFailed = errorInfo => {
+    console.log('Failed:', errorInfo);
     };
 
-    const handleChange = (field) => (e) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: e.target.value
-        }));
-        
-        // Очищаем ошибку при изменении
-        if (errors[field]) {
-            setErrors(prev => ({
-                ...prev,
-                [field]: ''
-            }));
-        }
-    };
+  return (
+    <Flex align='center' justify='center' className='h-screen login-container' vertical>
+        <Card className='shadow-lg'>
+            <Typography level={3} style={{ marginBottom: '20px' }}>Авторизация</Typography>
+          <Form
+            name="basic"
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+            style={{ maxWidth: 600 }}
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+            >
+            <Form.Item
+              label="Имя пользователя"
+              name="username"
+              rules={[{ required: true, message: 'Пожалуйста, введите ваше имя пользователя!' }]}>
+              <Input value={username} onChange={e => setUsername(e.target.value)} />
+            </Form.Item>
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        if (!validateForm()) {
-            return;
-        }
-        
-        setLoading(true);
-        setErrors({});
+            <Form.Item
+              label="Пароль"
+              name="password"
+              rules={[{ required: true, message: 'Пожалуйста, введите ваш пароль!' }]}
+              >
+              <Input.Password value={password} onChange={e => setPassword(e.target.value)} />
+            </Form.Item>
 
-        const result = await login(formData.email, formData.password);
-        
-        if (result.success) {
-            navigate('/banners');
-        } else {
-            setErrors({
-                general: result.message
-            });
-        }
-        
-        setLoading(false);
-    };
+            <Form.Item name="remember" valuePropName="checked" label={null}>
+              <Checkbox>Запомнить меня</Checkbox>
+            </Form.Item>
 
-    return (
-        <div className="login-container">
-            <div className="login-card">
-                <div className="login-header">
-                    <h2 className="login-title">Админ Панель</h2>
-                    <p className="login-subtitle">Введите ваши данные для входа</p>
-                </div>
-                
-                <form onSubmit={handleSubmit} className="login-form">
-                    {errors.general && (
-                        <div className="login-error-general">
-                            {errors.general}
-                        </div>
-                    )}
-                    
-                    <Input
-                        label="Логин"
-                        type="text"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange('email')}
-                        placeholder="Login"
-                        error={errors.email}
-                        required
-                        icon={<UserIcon />}
-                        iconPosition="left"
-                        fullWidth
-                        variant="outlined"
-                        disabled={loading}
-                    />
-                    
-                    <Input
-                        label="Пароль"
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange('password')}
-                        placeholder="Введите ваш пароль"
-                        error={errors.password}
-                        required
-                        icon={<PasswordIcon />}
-                        iconPosition="left"
-                        fullWidth
-                        variant="outlined"
-                        disabled={loading}
-                    />
-                    
-                    <button 
-                        type="submit" 
-                        disabled={loading}
-                        className="login-button"
-                    >
-                        {loading ? (
-                            <>
-                                <span className="login-button-spinner"></span>
-                                Вход...
-                            </>
-                        ) : 'Войти'}
-                    </button>
-                </form>
-                
-                <div className="login-footer">
-                    <a href="/forgot-password" className="login-link">
-                        Забыли пароль?
-                    </a>
-                </div>
-            </div>
-        </div>
-    );
+            <Form.Item label={null}>
+              <Button type="primary" htmlType="submit" onClick={onSubmit}>
+                  Войти
+              </Button>
+            </Form.Item>
+    </Form>  
+        </Card>
+    </Flex>
+  );
 };
 
 export default Login;

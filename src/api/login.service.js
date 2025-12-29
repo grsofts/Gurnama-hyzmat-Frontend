@@ -7,6 +7,10 @@ export const LoginService = {
     localStorage.setItem("accessToken", response.data.accessToken);
     return response.data;
   },
+  me: async () => {
+    const response = await http.get("/api/me", { withCredentials: true, headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` } });
+    return response.data;
+  },
 };
 
 export default LoginService;
