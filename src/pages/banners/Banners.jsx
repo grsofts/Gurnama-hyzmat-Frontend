@@ -5,7 +5,7 @@ import bannersService from "../../api/banners.service";
 import { ActivitySquare, CircleCheck, CircleX, Download, EllipsisVertical, Filter, Pencil, Plus, PlusIcon, Trash } from "lucide-react";
 import Column from "antd/es/table/Column";
 import { formatDateTime } from '../../utils/utils'
-// import NewOrderModal from "./NewOrderModal";
+import AddBannerModal from "./AddBannerModal";
 // import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import http from "../../api/http";
@@ -16,7 +16,6 @@ export default function Banners() {
     const [banners, setBanners] = useState([]);
     const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
-    // const [showModal, setShowModal] = useState(false);
     // const navigate = useNavigate();
 
   const [ search, setSearch ] = useState('');
@@ -40,8 +39,8 @@ export default function Banners() {
 
   loadOrders();
   }, []);
-  
-  // const [modalOpen, setModalOpen] = useState(false);
+
+  const [modalAddBanner, setModalAddBanner] = useState(false);
 
 const { RangePicker } = DatePicker;
 
@@ -49,7 +48,7 @@ const { RangePicker } = DatePicker;
   return (
     <Flex className="rounded-xl">
         <Flex gap={"middle"} className="w-full" vertical>
-          {/* <NewOrderModal modalOpen={modalOpen} setModalOpen={setModalOpen} /> */}
+          <AddBannerModal modalOpen={modalAddBanner} setModalOpen={setModalAddBanner} />
           <Card className="shadow-sm border-0 p-0" styles={{ body:{padding:16}}}>
             <Flex gap={"large"} align={"center"}>
               <Typography.Title level={4} style={{ margin: 0 }} strong>
@@ -57,7 +56,7 @@ const { RangePicker } = DatePicker;
               </Typography.Title>
               <Spacer/>
               <Input variant="filled" size="large" style={{ width: 300 }} allowClear type={"text"} placeholder="Search.." value={search} onChange={searchData}/>
-              <Button size="large" color="primary" className="gap-0.5 shadow-none" variant="solid"><Plus size={20}/><span>{t('buttons.add')}</span></Button>
+              <Button size="large" color="primary" className="gap-0.5 shadow-none" variant="solid" onClick={() => setModalAddBanner(true)}><Plus size={20}/><span>{t('buttons.add')}</span></Button>
               {/* <Segmented size="large" options={['Все баннеры', 'Выполненные', 'Отмененные', 'Новые']} /> */}
             </Flex>
 
