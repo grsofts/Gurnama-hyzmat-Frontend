@@ -12,7 +12,8 @@ export const BannersService = {
     return response.data;
   },
   createBanner: async (bannerData) => {
-    const response = await http.post(`/api/add_slider`, bannerData);
+    const response = await http.post(`/api/add_slider`, bannerData, {headers: {'Content-Type': 'multipart/form-data'}});
+    console.log('Create Banner Response:', response);
     return response.data;
   },
   setStatus: async (id, status) => {
