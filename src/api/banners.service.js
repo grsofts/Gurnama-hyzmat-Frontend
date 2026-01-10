@@ -17,7 +17,7 @@ export const BannersService = {
     return response.data;
   },
   setStatus: async (id, status) => {
-    const response = await http.patch(`/api/sliders/${id}/status`, { status });
+    const response = await http.put(`/api/slider_status/${id}?status=${status}`);
     return response.data;
   },
   updateBanner: async (id, bannerData) => {

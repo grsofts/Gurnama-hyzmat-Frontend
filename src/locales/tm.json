@@ -27,6 +27,73 @@
     "updated_at": "Üýtgedilen"
   },
   "buttons": {
-    "add": "Täze goş"
-  }
+    "add": "Täze goş",
+    "confirm": "Tassyklamak",
+    "no": "Ýok",
+    "save": "Ýatda sakla",
+    "yes": "Hawa"
+  },
+  "status": {
+    "active": "Aktiw",
+    "inactive": "Öçük"
+  },
+  "confirmation": {
+    "delete": "Bu elementi ýok etmek isleýärsiňizmi?",
+    "inactive": "Bu elementi öçürmek isleýärsiňizmi?",
+    "active": "Bu elementi aktiwleşdirmek isleýärsiňizmi?"
+  },
+  "fields": {
+    "name": "Ady",
+    "title": "Title",
+    "description": "Düşündiriş",
+    "image": "Surat",
+    "custom_link": "Başga link",
+    "order": "Tertip belgisi",
+    "status": "Status"
+  },
+  "placeholders": {
+    "name": "Ady ýazyň",
+    "title": "Title ýazyň",
+    "description": "Düşündirişi ýazyň",
+    "image": "Suraty saýlaň",
+    "your_link": "/sizinlinkiniz",
+    "order": "Tertip belgisi ýazyň"
+  },
+  "error_fields": {
+    "banner":{
+      "name_tm": "Türkmençe banner adyny ýazyň",
+      "title_tm": "Türkmençe banner title ýazyň",
+      "name_ru": "Rusça banner ady ýazyň",
+      "title_ru": "Rusça banner title ýazyň",
+      "name_en": "Iňlisçe banner ady ýazyň",
+      "title_en": "Iňlisçe banner title ýazyň"
+    }
+  },
+  "response_result":{
+    "banner":{
+      "create":"Banner üstünlikli döredildi",
+      "update":"Banner üstünlikli üýtgedildi",
+      "delete":"Banner üstünlikli ýok edildi",
+      "activate":"Banner üstünlikli aktiwleşdirildi",
+      "deactivate":"Banner üstünlikli öçürildi"
+    }
+  },
+  "toasts":{
+    "fields_required":"Ähli zerur öýjükleri doldurmagypyzy haýyş edýäris"
+  },
+
+  "tooltips":{
+    "custom_link":"Başga saýt - ulanyjy bannere basanda saýtdan siziň bellän linkiňize ugradylar, eger-de ýok bolsa, standart linke ugradylar"
+  },
+  "add_banner": "Banner goşmak",
+  "add_certificate": "Sertifikat goşmak",
+  "add_partner": "Partnýor goşmak",
+  "add_project": "Taslama goşmak",
+  "add_service": "Hyzmat goşmak",
+  "please_fill_form_slider": "Täze slider goşmak üçin maglumatlary giriziň",
+  "please_fill_form_service": "Täze hyzmat goşmak üçin maglumatlary giriziň",
+  "please_fill_form_banner": "Täze banner goşmak üçin maglumatlary giriziň",
+  "please_fill_form_certificate": "Täze sertifikat goşmak üçin maglumatlary giriziň",
+  "please_fill_form_partner": "Täze partnýor goşmak üçin maglumatlary giriziň",
+  "please_fill_form_project": "Täze taslama goşmak üçin maglumatlary giriziň"
 }

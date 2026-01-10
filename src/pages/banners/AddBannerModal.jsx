@@ -3,23 +3,20 @@ import { Info, InfoIcon, LucideInfo, PlusCircleIcon } from "lucide-react";
 import { useState } from "react";
 import bannersService from "../../api/banners.service";
 import { toast } from "../../utils/toast";
+import { useTranslation } from "react-i18next";
 
 
+export default function AddBannerModal({ modalOpen, setModalOpen, onSuccess }) {
 
-
-
-export default function AddBannerModal({ modalOpen, setModalOpen }) {
+  const { t } = useTranslation();
 
   const [form] = Form.useForm();
   const [load, setLoad] = useState(false);
   const [active, setActive] = useState(true);
   const [customLink, setCustomLink] = useState(false);
   const [images, setImages] = useState({tm:[], ru:[], en:[]});
-  const [order, setOrder] = useState(0);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
-  const [fieldsDone, setFieldsDone] = useState(false);
-
 
   const getBase64 = file =>
     new Promise((resolve, reject) => {
@@ -53,20 +50,13 @@ export default function AddBannerModal({ modalOpen, setModalOpen }) {
 
   const handleSubmit = async () => {
     try{
-      if(!fieldsDone){
-        toast.info('Hemme fieldleri dolduryn');
-        return;
-      }
-      setLoad(true);
-      toast.loading('добавляется');
       try {
         await form.validateFields();
-        // форма валидна
-        setFieldsDone(true);
+        setLoad(true);
       } catch {
         // есть ошибки
-        setFieldsDone(false);
-        toast.info('Заполните обязательные поля');
+        toast.info(t('toasts.fields_required'));
+        return;
       }
       const values = await form.validateFields();
       
@@ -100,26 +90,27 @@ export default function AddBannerModal({ modalOpen, setModalOpen }) {
         console.log(key, value);
       }
 
-      
-
       // Отправка формы
-      // const result = await bannersService.createBanner(formData);
-      // console.log('Server Response:', result);
-      // // Закрыть модалку и сбросить форму
-      // if (result) {
-      //   setModalOpen(false);
-      //   form.resetFields();
-      //   setImages({ tm: [], ru: [], en: [] });
-      //   setOrder(0);
-      //   setActive(true);
-      //   setCustomLink(false);
-      // }
+      const result = await bannersService.createBanner(formData);
+      if (result) {
+        setModalOpen(false);
+        form.resetFields();
+        setImages({ tm: [], ru: [], en: [] });
+        setActive(true);
+        setCustomLink(false);
+        toast.success(t('response_result.banner.create'));
+      }
     }catch(error){
       const message =
       error?.response?.data?.message ||
       error?.response?.data?.error ||
       'Server error';
       toast.warning(message);
+    }finally{
+      if (onSuccess) {
+          onSuccess(); 
+        }
+      setLoad(false);
     }
   };
 
@@ -127,7 +118,7 @@ export default function AddBannerModal({ modalOpen, setModalOpen }) {
     <button style={{ border: 0, background: 'none' }} type="button">
       <Flex direction="column" align="center" gap={2} vertical>
         <PlusCircleIcon size={32} className="text-gray-400" />
-        <div style={{ marginTop: 8 }}>Surat saýla</div>
+        <div style={{ marginTop: 8 }}>{t('placeholders.image')}</div>
       </Flex>
     </button>
   );
@@ -147,22 +138,22 @@ export default function AddBannerModal({ modalOpen, setModalOpen }) {
           ),
       children: (
         <Flex direction="column" gap={2} vertical>
-          <Form.Item name={['translation', 'tm', 'name']} required>
+          <Form.Item name={['translation', 'tm', 'name']} rules={[{ required: true, message: t('error_fields.banner.name_tm') }]}>
             <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>Ady</Space.Addon>
-              <Input disabled={load} required title="Ady" maxLength={150} showCount name="name" width={'100%'} placeholder="Ady ýazyň (TM)" />
+              <Space.Addon>{t('fields.name')}</Space.Addon>
+              <Input disabled={load} title={t('fields.name')} maxLength={150} showCount name="name" width={'100%'} placeholder={ `${t('placeholders.name')} (TM)`} />
             </Space.Compact>
           </Form.Item>
 
-          <Form.Item name={['translation', 'tm', 'title']} required>
+          <Form.Item name={['translation', 'tm', 'title']}  rules={[{ required: true, message: t('error_fields.banner.title_tm') }]}>
             <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>Title</Space.Addon>
-              <Input disabled={load} required title="Title" maxLength={250} showCount name="title" width={'100%'} placeholder="Title ýazyň (TM)" />
+              <Space.Addon>{t('fields.title')}</Space.Addon>
+              <Input disabled={load} title={t('fields.title')} maxLength={250} showCount name="title" width={'100%'} placeholder={ `${t('placeholders.title')} (TM)`} />
             </Space.Compact>
           </Form.Item>
 
           <Form.Item name={['translation', 'tm', 'desc']}>
-            <Input.TextArea disabled={load} required maxLength={500} showCount title="Düşündiriş" placeholder="Düşündirişini ýazyň (TM)" />
+            <Input.TextArea disabled={load} required maxLength={500} showCount title={t('fields.description')} placeholder={ `${t('placeholders.description')} (TM)`} />
           </Form.Item>
 
           <Form.Item name='image_tm'>
@@ -207,25 +198,25 @@ export default function AddBannerModal({ modalOpen, setModalOpen }) {
           ),
       children: (
         <Flex direction="column" gap={1} vertical>
-          <Form.Item name={['translation', 'ru', 'name']} required>
+          <Form.Item name={['translation', 'ru', 'name']}  rules={[{ required: true, message: t('error_fields.banner.name_ru') }]}>
             <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>Ady</Space.Addon>
-              <Input title="Ady" disabled={load} required maxLength={150} showCount name="name" width={'100%'} placeholder="Ady ýazyň (RU)" />
+              <Space.Addon>{t('fields.name')}</Space.Addon>
+              <Input title={t('fields.name')} disabled={load} maxLength={150} showCount name="name" width={'100%'} placeholder={`${t('placeholders.name')} (RU)`} />
             </Space.Compact>
           </Form.Item>
 
-          <Form.Item name={['translation', 'ru', 'title']} required>
+          <Form.Item name={['translation', 'ru', 'title']}  rules={[{ required: true, message: t('error_fields.banner.title_ru') }]}>
             <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>Title</Space.Addon>
-              <Input title="Title" disabled={load} maxLength={250} showCount name="title" width={'100%'} placeholder="Title ýazyň (RU)" />
+              <Space.Addon>{t('fields.title')}</Space.Addon>
+              <Input title={t('fields.title')} disabled={load} maxLength={250} showCount name="title" width={'100%'} placeholder={`${t('placeholders.title')} (RU)`} />
             </Space.Compact>
           </Form.Item>
 
-          <Form.Item required name={['translation', 'ru', 'desc']}>
-            <Input.TextArea required disabled={load} maxLength={500} showCount title="Düşündiriş" placeholder="Düşündirişini ýazyň (RU)" />
+          <Form.Item name={['translation', 'ru', 'desc']}>
+            <Input.TextArea disabled={load} maxLength={500} showCount title={t('fields.description')} placeholder={`${t('placeholders.description')} (RU)`} />
           </Form.Item>
 
-          <Form.Item name='image_ru' required>
+          <Form.Item name='image_ru'>
               <Upload
                 listType="picture-card"
                 fileList={images.ru}
@@ -266,22 +257,22 @@ export default function AddBannerModal({ modalOpen, setModalOpen }) {
           ),
       children: (
         <Flex direction="column" gap={2} vertical>
-          <Form.Item name={['translation', 'en', 'name']}>
+          <Form.Item name={['translation', 'en', 'name']}  rules={[{ required: true, message: t('error_fields.banner.name_en') }]}>
             <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>Ady</Space.Addon>
-              <Input required disabled={load} title="Ady" maxLength={150} showCount name="name" width={'100%'} placeholder="Ady ýazyň (EN)" />
+              <Space.Addon>{t('fields.name')}</Space.Addon>
+              <Input disabled={load} title={t('fields.name')} maxLength={150} showCount name="name" width={'100%'} placeholder={`${t('placeholders.name')} (EN)`} />
             </Space.Compact>
           </Form.Item>
 
-          <Form.Item name={['translation', 'en', 'title']}>
+          <Form.Item name={['translation', 'en', 'title']}  rules={[{ required: true, message: t('error_fields.banner.title_en') }]}>
             <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>Title</Space.Addon>
-              <Input required disabled={load} title="Title" maxLength={250} showCount name="title" width={'100%'} placeholder="Title ýazyň (EN)" />
+              <Space.Addon>{t('fields.title')}</Space.Addon>
+              <Input disabled={load} title={t('fields.title')} maxLength={250} showCount name="title" width={'100%'} placeholder={`${t('placeholders.title')} (EN)`} />
             </Space.Compact>
           </Form.Item>
 
           <Form.Item name={['translation', 'en', 'desc']}>
-            <Input.TextArea required disabled={load} maxLength={500} showCount title="Düşündiriş" placeholder="Düşündirişini ýazyň (EN)" />
+            <Input.TextArea disabled={load} maxLength={500} showCount title={t('fields.description')} placeholder={`${t('placeholders.description')} (EN)`} />
           </Form.Item>
 
           <Form.Item name='image_en'>
@@ -314,20 +305,10 @@ export default function AddBannerModal({ modalOpen, setModalOpen }) {
     }
   ];
 
-  const checkFields = () =>{
-    
-    if(!form.getFieldValue(['translation', 'tm', 'name']) && !form.getFieldValue(['translation', 'tm', 'title']) && !form.getFieldValue(['translation', 'tm', 'desc'])) {
-      setFieldsDone(true);
-    } else {
-      setFieldsDone(false);
-    }
-    console.log('Done:',fieldsDone);
-    
-  }
 
   return (
     <Modal 
-      title="Banner goşmak" 
+      title={t('add_banner')}
       open={modalOpen} 
       onCancel={() => setModalOpen(false)} 
       onOk={handleSubmit}
@@ -337,28 +318,28 @@ export default function AddBannerModal({ modalOpen, setModalOpen }) {
       okButtonProps={{disabled:form.getFieldsError().some(({ errors }) => errors.length) || images.tm.length === 0 || images.ru.length === 0 || images.en.length === 0}}
       closable={false}
       wrapProps={{ onClick: e => e.stopPropagation() }}
-      okText="Goşmak">
-      <p>Banner goşmak üçin maglumatlary giriziň</p>
-      <Form form={form} layout="vertical" onChange={checkFields}>
+      okText={t('buttons.save')}>
+      <p>{t('please_fill_form_banner')}</p>
+      <Form form={form} layout="vertical" initialValues={{ order: 0 }}>
         <Tabs defaultActiveKey="1" items={tabItems}/>
         <Divider />
         <Flex direction="column" gap={7} vertical>
           <Flex direction="column" align="center" gap={5} horizontal>
-            <Checkbox  disabled={load} checked={customLink} onChange={e => setCustomLink(e.target.checked)}>Başga saýt</Checkbox>
-            <Tooltip title="Başga saýt - ulanyjy bannere basanda saýtdan siziň bellän linkiňize ugradylar, eger-de ýok bolsa, standart linke ugradylar">
+            <Checkbox  disabled={load} checked={customLink} onChange={e => setCustomLink(e.target.checked)}>{t('fields.custom_link')}</Checkbox>
+            <Tooltip title={t('tooltips.custom_link')}>
               <InfoIcon className="text-primary" size={16} />
             </Tooltip>
           </Flex>
           <Form.Item name="link">
-            <Input disabled={load} placeholder={customLink ? 'https://sizinlinkiniz': '/sizinlinkiniz'} type="text" />
+            <Input disabled={load} placeholder={customLink ? `https:/${t('placeholders.your_link')}` : t('placeholders.your_link')} type="text" />
           </Form.Item>
 
-          <Form.Item label="Tertip sany" name="order" required>
-            <Input disabled={load} placeholder="Tertip sany" type="number" value={order} onChange={e => setOrder(e.target.value)} />
+          <Form.Item label={t('fields.order')} name="order" rules={[{ required: true, message: t('placeholders.order') }]}>
+            <Input disabled={load} placeholder={t('placeholders.order')} type="number"/>
           </Form.Item>
         </Flex>
         <Flex direction="column" gap={5} horizontal>
-          <Switch checked={active} onChange={setActive} disabled={load} /> <span>Aktiw</span>
+          <Switch checked={active} onChange={setActive} disabled={load} /> <span>{t('status.active')}</span>
         </Flex>
       </Form>
     </Modal>
