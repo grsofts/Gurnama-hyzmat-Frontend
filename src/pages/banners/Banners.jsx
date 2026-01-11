@@ -10,12 +10,16 @@ import { useTranslation } from "react-i18next";
 import http from "../../api/http";
 import Spacer from "../../components/ui/Spacer";
 import { toast } from "../../utils/toast";
+import EditBannerModal from "./EditBannerModal";
 
 
 export default function Banners() {
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
+  const [modalEditBanner, setModalEditBanner] = useState(false);
+  const [editBannerId, setEditBannerId] = useState(null);
+
 
   const [search, setSearch] = useState('');
 
@@ -108,7 +112,8 @@ export default function Banners() {
     }
 
     if (key === "edit") {
-      console.log("Edit:", record);
+      setEditBannerId(record.id);
+      setModalEditBanner(true);
     }
   };
 
@@ -116,6 +121,7 @@ export default function Banners() {
     <Flex className="rounded-xl">
         <Flex gap={"middle"} className="w-full" vertical>
           <AddBannerModal modalOpen={modalAddBanner} setModalOpen={setModalAddBanner} onSuccess={loadBanners} />
+          <EditBannerModal modalOpen={modalEditBanner} setModalOpen={setModalEditBanner} onSuccess={loadBanners} id={editBannerId} />
           <Card className="shadow-sm border-0 p-0" styles={{ body:{padding:16}}}>
             <Flex gap={"large"} align={"center"}>
               <Typography.Title level={4} style={{ margin: 0 }} strong>
@@ -139,6 +145,7 @@ export default function Banners() {
 
             <Column title={t('column.status')} dataIndex="is_active" key="is_active" render={(status) => (status ? <Tag color="green" variant="outlined">{t('status.active')}</Tag> : <Tag color="red" variant="outlined">{t('status.inactive')}</Tag>)} />
             <Column title={t('column.created_at')} dataIndex="createdAt" key="createdAt" render={(createdAt) => formatDateTime(createdAt)} />
+            <Column title={t('column.order')} dataIndex="sort_order" key="order" render={(sort_order) => sort_order} />
             <Column title={t('column.action')} key="action" render={(record) => (
               <Dropdown
                   menu={{

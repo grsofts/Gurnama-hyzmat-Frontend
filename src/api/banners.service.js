@@ -21,7 +21,7 @@ export const BannersService = {
     return response.data;
   },
   updateBanner: async (id, bannerData) => {
-    const response = await http.put(`/api/update_slider/${id}`, bannerData);
+    const response = await http.put(`/api/update_slider/${id}`, bannerData, {headers: {'Content-Type': 'multipart/form-data'}});
     return response.data;
   },
   deleteBanner: async (id) => {

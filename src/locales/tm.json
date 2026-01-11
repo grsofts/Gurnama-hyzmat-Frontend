@@ -24,6 +24,7 @@
     "status": "Status",
     "created_at": "Döredilen",
     "action": "Hereket",
+    "order": "Tertip belgisi",
     "updated_at": "Üýtgedilen"
   },
   "buttons": {
@@ -71,11 +72,11 @@
   },
   "response_result":{
     "banner":{
-      "create":"Banner üstünlikli döredildi",
-      "update":"Banner üstünlikli üýtgedildi",
-      "delete":"Banner üstünlikli ýok edildi",
-      "activate":"Banner üstünlikli aktiwleşdirildi",
-      "deactivate":"Banner üstünlikli öçürildi"
+      "create":"Banner döredildi",
+      "update":"Banner üýtgedildi",
+      "delete":"Banner ýok edildi",
+      "activate":"Banner aktiwleşdirildi",
+      "deactivate":"Banner öçürildi"
     }
   },
   "toasts":{
@@ -95,5 +96,6 @@
   "please_fill_form_banner": "Täze banner goşmak üçin maglumatlary giriziň",
   "please_fill_form_certificate": "Täze sertifikat goşmak üçin maglumatlary giriziň",
   "please_fill_form_partner": "Täze partnýor goşmak üçin maglumatlary giriziň",
-  "please_fill_form_project": "Täze taslama goşmak üçin maglumatlary giriziň"
+  "please_fill_form_project": "Täze taslama goşmak üçin maglumatlary giriziň",
+  "edit_banner": "Banneri üýtgetmek"
 }
