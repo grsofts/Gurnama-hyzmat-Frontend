@@ -1,0 +1,27 @@
+.editor-ui .ql-toolbar {
+  border-top-left-radius: var(--editor-radius);
+  border-top-right-radius: var(--editor-radius);
+}
+
+.editor-ui .ql-container {
+  border-bottom-left-radius: var(--editor-radius);
+  border-bottom-right-radius: var(--editor-radius);
+}
+
+.editor-ui .ql-editor {
+  min-height: 300px;
+  font-size: 16px;
+}
+
+.ql-editor.ql-blank::before {
+  color: var(--ant-color-text-placeholder);
+  opacity: 1;
+}
+
+.ql-toolbar.ql-snow{
+    border: solid 1px var(--ant-color-border);
+}
+.ql-container.ql-snow {
+    border: solid 1px var(--ant-color-border);
+    border-top: none;
+}

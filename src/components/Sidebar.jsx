@@ -78,7 +78,7 @@ export default function Sidebar({ collapsed }) {
     >
       <Flex align='center' gap={2} justify='center' style={{ height: 120 }}> 
         <Flex align='center' justify='center' horizontal>     
-          <Image src={Logo} sizes='small' size='small' style={{ borderRadius: 8, height: collapsed ? 40 : 64 }} preview={{ open: false }}/> 
+          <Image src={Logo} sizes='small' size='small' style={{ borderRadius: 8, height: collapsed ? 40 : 64 }} preview={false}/> 
           {!collapsed ? <Typography level={2} style={{fontWeight: 'bold', fontSize:collapsed ? 15 : 20}}>Gurnama Hyzmat</Typography> : null}
         </Flex>
       </Flex>

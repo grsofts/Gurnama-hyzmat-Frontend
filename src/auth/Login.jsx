@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './useAuth';
+import { useAuth } from '../hooks/useAuth';
 import './Login.css';
-import { UserIcon } from 'lucide-react';
 import { Flex, Form, Input, Button, Checkbox, Card } from 'antd';
 import Typography from 'antd/es/typography/Typography';
-
-
-
 
 const Login = () => {
     const navigate = useNavigate();
@@ -18,18 +14,16 @@ const Login = () => {
     const onSubmit = async () => {
     const res = await login(username, password);
     if (res.success) {
-      console.log('Login successful:', res);
-      
       navigate("/banners", { replace: true });
     }
   };
 
   const onFinish = values => {
     console.log('Success:', values);
-    };
-    const onFinishFailed = errorInfo => {
+  };
+  const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
-    };
+  };
 
   return (
     <Flex align='center' justify='center' className='h-screen login-container' vertical>

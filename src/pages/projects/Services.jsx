@@ -3,19 +3,18 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useBanners } from "../../hooks/useBanners";
-import bannersService from "../../api/banners.service";
+import { useServices } from "../../hooks/useServices";
+import hyzmatService from "../../api/hyzmat.service";
 import { toast } from "../../utils/toast";
 
 import Spacer from "../../components/ui/Spacer";
-import AddBannerModal from "./AddBannerModal";
-import EditBannerModal from "./EditBannerModal";
-import BannerTable from "./helper/BannerTable";
+import ServiceTable from "./helper/ServiceTable";
+import AddServiceModal from "./AddServiceModal";
 
-export default function Banners() {
+export default function Services() {
   const { t } = useTranslation();
-  const { loading, setSearch, filteredData, loadBanners, banners } = useBanners();
-  
+  const { services, loading, setSearch, filteredData, loadServices } = useServices();
+
   const [modalState, setModalState] = useState({ edit: false, add: false, id: null });
 
   // Универсальный обработчик действий (Actions)
@@ -38,12 +37,12 @@ export default function Banners() {
       onOk: async () => {
         try {
           const result = isDelete 
-            ? await bannersService.deleteBanner(record.id)
-            : await bannersService.setStatus(record.id, !record.is_active);
+            ? await hyzmatService.deleteService(record.id)
+            : await hyzmatService.setStatus(record.id, !record.is_active);
 
           if (result) {
             toast.success(t(isDelete ? 'response_result.banner.delete' : record.is_active ? 'response_result.banner.deactivate' : 'response_result.banner.activate'));
-            loadBanners();
+            loadServices();
           }
         } catch (err) {
           toast.error(err?.response?.data?.message || 'Server error');
@@ -55,23 +54,23 @@ export default function Banners() {
   return (
     <Flex className="rounded-xl" vertical gap="middle">
       {/* Модальные окна */}
-      <AddBannerModal 
+      <AddServiceModal 
         modalOpen={modalState.add} 
         setModalOpen={(val) => setModalState(prev => ({ ...prev, add: val }))} 
-        onSuccess={loadBanners} 
+        onSuccess={loadServices} 
       />
-      <EditBannerModal 
+       {/*<EditServiceModal 
         id={modalState.id}
         modalOpen={modalState.edit} 
         setModalOpen={(val) => setModalState(prev => ({ ...prev, edit: val }))} 
-        onSuccess={loadBanners} 
-      />
+        onSuccess={loadServices} 
+      /> */}
 
       {/* Шапка с поиском */}
       <Card styles={{ body: { padding: 16 } }} className="shadow-sm border-0">
         <Flex gap="large" align="center">
           <Typography.Title level={4} style={{ margin: 0 }} strong>
-            {t('menu.banners')}
+            {t('menu.services')}
           </Typography.Title>
           <Spacer />
           <Input
@@ -94,9 +93,9 @@ export default function Banners() {
 
       {/* Контент с таблицей */}
       <Card styles={{ body: { padding: 16 } }} className="shadow-sm border-0">
-        <BannerTable 
+        <ServiceTable 
           data={filteredData} 
-          totalBanners={banners}
+          totalServices={services}
           loading={loading} 
           onAction={handleAction} 
           t={t} 

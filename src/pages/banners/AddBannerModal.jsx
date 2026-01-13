@@ -4,6 +4,7 @@ import { useState } from "react";
 import bannersService from "../../api/banners.service";
 import { toast } from "../../utils/toast";
 import { useTranslation } from "react-i18next";
+import { getBase64 } from "../../utils/utils";
 
 
 export default function AddBannerModal({ modalOpen, setModalOpen, onSuccess }) {
@@ -18,13 +19,6 @@ export default function AddBannerModal({ modalOpen, setModalOpen, onSuccess }) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
 
-  const getBase64 = file =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-  });
 
   const handlePreview = async file => {
     if (!file.url && !file.preview) {
@@ -324,13 +318,8 @@ export default function AddBannerModal({ modalOpen, setModalOpen, onSuccess }) {
         <Tabs defaultActiveKey="1" items={tabItems}/>
         <Divider />
         <Flex direction="column" gap={7} vertical>
-          <Flex direction="column" align="center" gap={5} horizontal>
-            <Checkbox  disabled={load} checked={customLink} onChange={e => setCustomLink(e.target.checked)}>{t('fields.custom_link')}</Checkbox>
-            <Tooltip title={t('tooltips.custom_link')}>
-              <InfoIcon className="text-primary" size={16} />
-            </Tooltip>
-          </Flex>
-          <Form.Item name="link">
+          
+          <Form.Item name="link" label={t("fields.link")}>
             <Input disabled={load} placeholder={customLink ? `https:/${t('placeholders.your_link')}` : t('placeholders.your_link')} type="text" />
           </Form.Item>
 
@@ -345,3 +334,4 @@ export default function AddBannerModal({ modalOpen, setModalOpen, onSuccess }) {
     </Modal>
   )
 }
+

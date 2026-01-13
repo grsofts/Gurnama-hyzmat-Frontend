@@ -5,7 +5,7 @@ import { theme } from "antd";
 import { Header } from "antd/es/layout/layout";
 import { Moon, Sun } from "lucide-react";
 import { useTranslation } from 'react-i18next'
-import { useAuth } from "../auth/useAuth";
+import { useAuth } from "../hooks/useAuth";
 import { useLanguage } from "../utils/language/useLanguage";
 import Spacer from "./ui/Spacer";
 

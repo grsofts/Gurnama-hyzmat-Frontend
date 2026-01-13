@@ -1,59 +1,23 @@
 import { Form, Modal, Input, Tabs, Image, Flex, Space, Divider, Switch, Upload, Checkbox, Tooltip } from "antd";
 import { Info, InfoIcon, LucideInfo, PlusCircleIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import bannersService from "../../api/banners.service";
+import { useState } from "react";
+import hyzmatService from "../../api/hyzmat.service";
 import { toast } from "../../utils/toast";
 import { useTranslation } from "react-i18next";
-import http from "../../api/http";
 import { getBase64 } from "../../utils/utils";
+import 'quill/dist/quill.snow.css';
+import EditorUI from "../../components/ui/EditorUI";
 
-
-export default function EditBannerModal({ modalOpen, setModalOpen, onSuccess, id }) {
+export default function AddServiceModal({ modalOpen, setModalOpen, onSuccess }) {
 
   const { t } = useTranslation();
 
   const [form] = Form.useForm();
   const [load, setLoad] = useState(false);
   const [active, setActive] = useState(true);
-  const [customLink, setCustomLink] = useState(false);
   const [images, setImages] = useState({tm:[], ru:[], en:[]});
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
-
-  
-
-  useEffect(() => {
-    console.log('edit opened');
-    
-    if (modalOpen && id) {
-      // Fetch banner data by ID and populate the form
-      const fetchBanner = async () => {
-        const result = await bannersService.getBannerById(id);
-        
-        setActive(result.is_active);
-        setCustomLink(result.is_custom_link);
-        console.log('custmom link:', result.is_custom_link);
-        
-        form.setFieldValue('link', result.link);
-        form.setFieldValue('order', result.sort_order);
-        
-        form.setFieldValue('translation', {
-          tm: { name: result.translations.tm.name, title: result.translations.tm.title, desc: result.translations.tm.desc },
-          ru: { name: result.translations.ru.name, title: result.translations.ru.title, desc: result.translations.ru.desc },
-          en: { name: result.translations.en.name, title: result.translations.en.title, desc: result.translations.en.desc },
-        });
-
-        const initialImages = {
-          tm: result.translations.tm.image ? [{ uid: '-1', name: 'tm_image.png', status: 'done', url: `${http.defaults.baseURL}/uploads${result.translations.tm.image}` }] : [],
-          ru: result.translations.ru.image ? [{ uid: '-2', name: 'ru_image.png', status: 'done', url: `${http.defaults.baseURL}/uploads${result.translations.ru.image}` }] : [],
-          en: result.translations.en.image ? [{ uid: '-3', name: 'en_image.png', status: 'done', url: `${http.defaults.baseURL}/uploads${result.translations.en.image}` }] : [],
-        };
-
-        setImages(initialImages);
-      };
-      fetchBanner();
-    }
-  }, [id, modalOpen, form]);
 
   const handlePreview = async file => {
     if (!file.url && !file.preview) {
@@ -92,8 +56,6 @@ export default function EditBannerModal({ modalOpen, setModalOpen, onSuccess, id
       const payload = {
         sort_order: Number(values.order),
         is_active: active,
-        link: values.link,
-        is_custom_link: customLink,
         translations: values.translation
       };
 
@@ -120,14 +82,13 @@ export default function EditBannerModal({ modalOpen, setModalOpen, onSuccess, id
       }
 
       // Отправка формы
-      const result = await bannersService.updateBanner(id, formData);
+      const result = await hyzmatService.createService(formData);
       if (result) {
         setModalOpen(false);
         form.resetFields();
         setImages({ tm: [], ru: [], en: [] });
         setActive(true);
-        setCustomLink(false);
-        toast.success(t('response_result.banner.update'));
+        toast.success(t('response_result.service.create'));
       }
     }catch(error){
       const message =
@@ -167,34 +128,19 @@ export default function EditBannerModal({ modalOpen, setModalOpen, onSuccess, id
           ),
       children: (
         <Flex direction="column" gap={2} vertical>
-          <Form.Item>
+          <Form.Item name={['translation', 'tm', 'title']} rules={[{ required: true, message: t('error_fields.service.name_tm') }]}>
             <Space.Compact style={{ display: 'flex' }}>
               <Space.Addon>{t('fields.name')}</Space.Addon>
-              <Form.Item
-                name={['translation', 'tm', 'name']}
-                noStyle // Убирает лишние отступы и ошибки под инпутом, чтобы не ломать Space.Compact
-                rules={[{ required: true, message: t('error_fields.banner.name_tm') }]}
-              >
-                <Input disabled={load} title={t('fields.name')} maxLength={150} showCount width={'100%'} placeholder={ `${t('placeholders.name')} (TM)`} />
-              </Form.Item>
+              <Input disabled={load} title={t('fields.name')} maxLength={150} showCount name="name" width={'100%'} placeholder={ `${t('placeholders.name')} (TM)`} />
             </Space.Compact>
           </Form.Item>
 
-          <Form.Item >
-            <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>{t('fields.title')}</Space.Addon>
-              <Form.Item
-                name={['translation', 'tm', 'title']}
-                noStyle
-                rules={[{ required: true, message: t('error_fields.banner.title_tm') }]}
-              >
-                <Input disabled={load} title={t('fields.title')} maxLength={250} showCount width={'100%'} placeholder={ `${t('placeholders.title')} (TM)`} />
-              </Form.Item>
-            </Space.Compact>
+          <Form.Item name={['translation', 'tm', 'short_desc']}  rules={[{ required: true, message: t('error_fields.service.short_desc_tm') }]}>
+              <Input.TextArea disabled={load} title={t('fields.short_desc')} maxLength={250} showCount name="short_desc" width={'100%'} placeholder={ `${t('placeholders.short_desc')} (TM)`} />
           </Form.Item>
 
-          <Form.Item name={['translation', 'tm', 'desc']}>
-            <Input.TextArea disabled={load} required maxLength={500} showCount title={t('fields.description')} placeholder={ `${t('placeholders.description')} (TM)`} />
+          <Form.Item title={t('fields.description')} name={['translation', 'tm', 'desc']}>
+            <EditorUI placeholder={`${t('placeholders.description')} (TM)`} value={form.getFieldValue(['translation', 'tm', 'desc'])} onChange={value => form.setFieldValue(['translation', 'tm', 'desc'], value)} radius={8}/>
           </Form.Item>
 
           <Form.Item name='image_tm'>
@@ -218,7 +164,7 @@ export default function EditBannerModal({ modalOpen, setModalOpen, onSuccess, id
                       onOpenChange: visible => setPreviewOpen(visible),
                       afterOpenChange: visible => !visible && setPreviewImage(''),
                     }}
-                     src={previewImage}
+                    src={previewImage}
                   />
                 )}
           </Form.Item>
@@ -239,34 +185,19 @@ export default function EditBannerModal({ modalOpen, setModalOpen, onSuccess, id
           ),
       children: (
         <Flex direction="column" gap={1} vertical>
-          <Form.Item name={['translation', 'ru', 'name']}  rules={[{ required: true, message: t('error_fields.banner.name_ru') }]}>
+          <Form.Item name={['translation', 'ru', 'title']}  rules={[{ required: true, message: t('error_fields.service.name_ru') }]}>
             <Space.Compact style={{ display: 'flex' }}>
               <Space.Addon>{t('fields.name')}</Space.Addon>
-              <Form.Item
-                name={['translation', 'ru', 'name']}
-                noStyle
-                rules={[{ required: true, message: t('error_fields.banner.name_ru') }]}
-              >
-                <Input title={t('fields.name')} disabled={load} maxLength={150} showCount width={'100%'} placeholder={`${t('placeholders.name')} (RU)`} />
-              </Form.Item>
+              <Input title={t('fields.name')} disabled={load} maxLength={150} showCount name="name" width={'100%'} placeholder={`${t('placeholders.name')} (RU)`} />
             </Space.Compact>
           </Form.Item>
 
-          <Form.Item name={['translation', 'ru', 'title']}  rules={[{ required: true, message: t('error_fields.banner.title_ru') }]}>
-            <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>{t('fields.title')}</Space.Addon>
-              <Form.Item
-                name={['translation', 'ru', 'title']}
-                noStyle
-                rules={[{ required: true, message: t('error_fields.banner.title_ru') }]}
-              >
-                <Input title={t('fields.title')} disabled={load} maxLength={250} showCount width={'100%'} placeholder={`${t('placeholders.title')} (RU)`} />
-              </Form.Item>
-            </Space.Compact>
+          <Form.Item name={['translation', 'ru', 'short_desc']}  rules={[{ required: true, message: t('error_fields.service.short_desc_ru') }]}>
+            <Input.TextArea disabled={load} title={t('fields.short_desc')} maxLength={500} showCount name="short_desc" width={'100%'} placeholder={`${t('placeholders.short_desc')} (RU)`} />
           </Form.Item>
 
           <Form.Item name={['translation', 'ru', 'desc']}>
-            <Input.TextArea disabled={load} maxLength={500} showCount title={t('fields.description')} placeholder={`${t('placeholders.description')} (RU)`} />
+            <EditorUI placeholder={`${t('placeholders.description')} (RU)`} value={form.getFieldValue(['translation', 'ru', 'desc'])} onChange={value => form.setFieldValue(['translation', 'ru', 'desc'], value)} radius={8}/>
           </Form.Item>
 
           <Form.Item name='image_ru'>
@@ -289,7 +220,7 @@ export default function EditBannerModal({ modalOpen, setModalOpen, onSuccess, id
                       onOpenChange: visible => setPreviewOpen(visible),
                       afterOpenChange: visible => !visible && setPreviewImage(''),
                     }}
-                     src={previewImage}
+                    src={previewImage}
                   />
                 )}
           </Form.Item>
@@ -310,34 +241,19 @@ export default function EditBannerModal({ modalOpen, setModalOpen, onSuccess, id
           ),
       children: (
         <Flex direction="column" gap={2} vertical>
-          <Form.Item name={['translation', 'en', 'name']}  rules={[{ required: true, message: t('error_fields.banner.name_en') }]}>
+          <Form.Item name={['translation', 'en', 'title']}  rules={[{ required: true, message: t('error_fields.service.name_en') }]}>
             <Space.Compact style={{ display: 'flex' }}>
               <Space.Addon>{t('fields.name')}</Space.Addon>
-              <Form.Item
-                name={['translation', 'en', 'name']}
-                noStyle
-                rules={[{ required: true, message: t('error_fields.banner.name_en') }]}
-              >
-                <Input disabled={load} title={t('fields.name')} maxLength={150} showCount width={'100%'} placeholder={`${t('placeholders.name')} (EN)`} />
-              </Form.Item>
+              <Input disabled={load} title={t('fields.name')} maxLength={150} showCount name="name" width={'100%'} placeholder={`${t('placeholders.name')} (EN)`} />
             </Space.Compact>
           </Form.Item>
 
-          <Form.Item name={['translation', 'en', 'title']}  rules={[{ required: true, message: t('error_fields.banner.title_en') }]}>
-            <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>{t('fields.title')}</Space.Addon>
-              <Form.Item
-                name={['translation', 'en', 'title']}
-                noStyle
-                rules={[{ required: true, message: t('error_fields.banner.title_en') }]}
-              >
-                <Input disabled={load} title={t('fields.title')} maxLength={250} showCount width={'100%'} placeholder={`${t('placeholders.title')} (EN)`} />
-              </Form.Item>
-            </Space.Compact>
+          <Form.Item name={['translation', 'en', 'short_desc']} rules={[{ required: true, message: t('error_fields.service.short_desc_en') }]}>
+              <Input.TextArea disabled={load} title={t('fields.short_desc')} maxLength={500} showCount name="short_desc" width={'100%'} placeholder={`${t('placeholders.short_desc')} (EN)`} />
           </Form.Item>
 
           <Form.Item name={['translation', 'en', 'desc']}>
-            <Input.TextArea disabled={load} maxLength={500} showCount title={t('fields.description')} placeholder={`${t('placeholders.description')} (EN)`} />
+            <EditorUI placeholder={`${t('placeholders.description')} (EN)`} value={form.getFieldValue(['translation', 'en', 'desc'])} onChange={value => form.setFieldValue(['translation', 'en', 'desc'], value)} radius={8}/>
           </Form.Item>
 
           <Form.Item name='image_en'>
@@ -361,7 +277,7 @@ export default function EditBannerModal({ modalOpen, setModalOpen, onSuccess, id
                       onOpenChange: visible => setPreviewOpen(visible),
                       afterOpenChange: visible => !visible && setPreviewImage(''),
                     }}
-                     src={previewImage}
+                    src={previewImage}
                   />
                 )}
           </Form.Item>
@@ -373,25 +289,23 @@ export default function EditBannerModal({ modalOpen, setModalOpen, onSuccess, id
 
   return (
     <Modal 
-      title={t('edit_banner')}
+      title={t('add_service')}
       open={modalOpen} 
       onCancel={() => setModalOpen(false)} 
       onOk={handleSubmit}
       centered 
+      width={1000}
       cancelButtonProps={{hidden:load}}
       confirmLoading={load}
       okButtonProps={{disabled:form.getFieldsError().some(({ errors }) => errors.length) || images.tm.length === 0 || images.ru.length === 0 || images.en.length === 0}}
       closable={false}
       wrapProps={{ onClick: e => e.stopPropagation() }}
       okText={t('buttons.save')}>
+      <p>{t('please_fill_form_service')}</p>
       <Form form={form} layout="vertical" initialValues={{ order: 0 }}>
         <Tabs defaultActiveKey="1" items={tabItems}/>
         <Divider />
         <Flex direction="column" gap={7} vertical>
-          <Form.Item name="link" label={t("fields.link")}>
-            <Input disabled={load} placeholder={customLink ? `https:/${t('placeholders.your_link')}` : t('placeholders.your_link')} type="text" />
-          </Form.Item>
-
           <Form.Item label={t('fields.order')} name="order" rules={[{ required: true, message: t('placeholders.order') }]}>
             <Input disabled={load} placeholder={t('placeholders.order')} type="number"/>
           </Form.Item>
@@ -403,3 +317,4 @@ export default function EditBannerModal({ modalOpen, setModalOpen, onSuccess, id
     </Modal>
   )
 }
+

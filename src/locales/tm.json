@@ -18,6 +18,7 @@
   "column": {
     "id": "ID",
     "name": "Ady",
+    "short_desc": "Gysga düşündiriş",
     "description": "Düşündiriş",
     "image": "Surat",
     "title": "Title",
@@ -46,15 +47,17 @@
   "fields": {
     "name": "Ady",
     "title": "Title",
+    "short_desc": "Gysga düşündiriş",
     "description": "Düşündiriş",
     "image": "Surat",
-    "custom_link": "Başga link",
+    "link": "Link",
     "order": "Tertip belgisi",
     "status": "Status"
   },
   "placeholders": {
     "name": "Ady ýazyň",
     "title": "Title ýazyň",
+    "short_desc": "Gysga düşündiriş ýazyň",
     "description": "Düşündirişi ýazyň",
     "image": "Suraty saýlaň",
     "your_link": "/sizinlinkiniz",
@@ -68,6 +71,14 @@
       "title_ru": "Rusça banner title ýazyň",
       "name_en": "Iňlisçe banner ady ýazyň",
       "title_en": "Iňlisçe banner title ýazyň"
+    },
+    "service": {
+      "name_tm": "Türkmençe hyzmat adyny ýazyň",
+      "short_desc_tm": "Türkmençe hyzmat gysga düşündirişini ýazyň",
+      "name_ru": "Русское название услуги",
+      "short_desc_ru": "Краткое описание услуги на русском",
+      "name_en": "Введите название услуги на английском",
+      "short_desc_en": "Введите краткое описание услуги на английском"
     }
   },
   "response_result":{
@@ -77,6 +88,13 @@
       "delete":"Banner ýok edildi",
       "activate":"Banner aktiwleşdirildi",
       "deactivate":"Banner öçürildi"
+    },
+    "service":{
+      "create":"Hyzmat döredildi",
+      "update":"Hyzmat üýtgedildi",
+      "delete":"Hyzmat ýok edildi",
+      "activate":"Hyzmat aktiwleşdirildi",
+      "deactivate":"Hyzmat öçürildi"
     }
   },
   "toasts":{
