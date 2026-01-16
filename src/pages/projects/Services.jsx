@@ -10,6 +10,7 @@ import { toast } from "../../utils/toast";
 import Spacer from "../../components/ui/Spacer";
 import ServiceTable from "./helper/ServiceTable";
 import AddServiceModal from "./AddServiceModal";
+import EditServiceModal from "./EditServiceModal";
 
 export default function Services() {
   const { t } = useTranslation();
@@ -41,7 +42,7 @@ export default function Services() {
             : await hyzmatService.setStatus(record.id, !record.is_active);
 
           if (result) {
-            toast.success(t(isDelete ? 'response_result.banner.delete' : record.is_active ? 'response_result.banner.deactivate' : 'response_result.banner.activate'));
+            toast.success(t(isDelete ? 'response_result.service.delete' : record.is_active ? 'response_result.service.deactivate' : 'response_result.service.activate'));
             loadServices();
           }
         } catch (err) {
@@ -59,12 +60,12 @@ export default function Services() {
         setModalOpen={(val) => setModalState(prev => ({ ...prev, add: val }))} 
         onSuccess={loadServices} 
       />
-       {/*<EditServiceModal 
+       <EditServiceModal 
         id={modalState.id}
         modalOpen={modalState.edit} 
         setModalOpen={(val) => setModalState(prev => ({ ...prev, edit: val }))} 
         onSuccess={loadServices} 
-      /> */}
+      />
 
       {/* Шапка с поиском */}
       <Card styles={{ body: { padding: 16 } }} className="shadow-sm border-0">

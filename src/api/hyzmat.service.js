@@ -7,7 +7,7 @@ export const HyzmatService = {
     const response = await http.get(`/api/services?lang=${lang}`);
     return response.data;
   },
-  getBannerById: async (id) => {
+  getServiceById: async (id) => {
     const response = await http.get(`/api/services/${id}?lang=${lang}`);
     return response.data;
   },
