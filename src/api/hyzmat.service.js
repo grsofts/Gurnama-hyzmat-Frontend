@@ -11,16 +11,16 @@ export const HyzmatService = {
     const response = await http.get(`/api/services/${id}?lang=${lang}`);
     return response.data;
   },
-  createService: async (bannerData) => {
-    const response = await http.post(`/api/add_service`, bannerData, {headers: {'Content-Type': 'multipart/form-data'}});
+  createService: async (Data) => {
+    const response = await http.post(`/api/add_service`, Data, {headers: {'Content-Type': 'multipart/form-data'}});
     return response.data;
   },
   setStatus: async (id, status) => {
     const response = await http.put(`/api/service_status/${id}?status=${status}`);
     return response.data;
   },
-  updateService: async (id, bannerData) => {
-    const response = await http.put(`/api/update_service/${id}`, bannerData, {headers: {'Content-Type': 'multipart/form-data'}});
+  updateService: async (id, Data) => {
+    const response = await http.put(`/api/update_service/${id}`, Data, {headers: {'Content-Type': 'multipart/form-data'}});
     return response.data;
   },
   deleteService: async (id) => {

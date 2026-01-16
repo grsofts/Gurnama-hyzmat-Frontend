@@ -79,6 +79,24 @@
       "short_desc_ru": "Краткое описание услуги на русском",
       "name_en": "Введите название услуги на английском",
       "short_desc_en": "Введите краткое описание услуги на английском"
+    },
+    "project": {
+      "name_tm": "Türkmençe taslama adyny ýazyň",
+      "description_tm": "Türkmençe taslama düşündirişini ýazyň",
+      "name_ru": "Rusça taslama adyny ýazyň",
+      "description_ru": "Введите описание проекта на русском",
+      "name_en": "Введите название проекта на английском",
+      "description_en": "Введите описание проекта на английском"
+    },
+    "partner": {
+      "name_tm": "Türkmençe partnýor adyny ýazyň",
+      "name_ru": "Введите название партнёра на русском",
+      "name_en": "Введите название партнёра на английском"
+    },
+    "certificate": {
+      "name_tm": "Türkmençe sertifikat adyny ýazyň",
+      "name_ru": "Введите название сертификата на русском",
+      "name_en": "Введите название сертификата на английском"
     }
   },
   "response_result":{
@@ -95,6 +113,27 @@
       "delete":"Hyzmat ýok edildi",
       "activate":"Hyzmat aktiwleşdirildi",
       "deactivate":"Hyzmat öçürildi"
+    },
+    "project":{
+      "create":"Taslama döredildi",
+      "update":"Taslama üýtgedildi",
+      "delete":"Taslama ýok edildi",
+      "activate":"Taslama aktiwleşdirildi",
+      "deactivate":"Taslama öçürildi"
+    },
+    "partner":{
+      "create":"Partnýor döredildi",
+      "update":"Partnýor üýtgedildi",
+      "delete":"Partnýor ýok edildi",
+      "activate":"Partnýor aktiwleşdirildi",
+      "deactivate":"Partnýor öçürildi"
+    },
+    "certificate":{
+      "create":"Sertifikat döredildi",
+      "update":"Sertifikat üýtgedildi",
+      "delete":"Sertifikat ýok edildi",
+      "activate":"Sertifikat aktiwleşdirildi",
+      "deactivate":"Sertifikat öçürildi"
     }
   },
   "toasts":{
