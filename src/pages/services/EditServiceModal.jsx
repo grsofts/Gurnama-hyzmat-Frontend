@@ -325,7 +325,7 @@ export default function EditServiceModal({ modalOpen, setModalOpen, onSuccess, i
 
   return (
     <Modal 
-      title={t('add_service')}
+      title={t('edit_service')}
       open={modalOpen} 
       onCancel={() => setModalOpen(false)} 
       onOk={handleSubmit}

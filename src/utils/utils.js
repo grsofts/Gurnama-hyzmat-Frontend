@@ -12,6 +12,18 @@ const formatDateTime = (value) => {
   return `${dd}.${MM}.${yyyy} ${HH}:${mm}`;
 };
 
+const formatOnlyDate = (value) => {
+  if (!value) return "-";
+
+  const d = new Date(value);
+
+  const dd = String(d.getDate()).padStart(2, "0");
+  const MM = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+
+  return `${dd}.${MM}.${yyyy}`;
+};
+
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -21,4 +33,4 @@ const getBase64 = (file) =>
 });
 
 
-export { formatDateTime , getBase64 };
+export { formatDateTime , formatOnlyDate , getBase64 };

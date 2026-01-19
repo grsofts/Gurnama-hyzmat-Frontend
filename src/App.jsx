@@ -7,7 +7,8 @@ import AppLayout from './components/AppLayout';
 //pages
 import Login from './auth/Login';
 import Banners from './pages/banners/Banners';
-import Services from './pages/projects/Services';
+import Services from './pages/services/Services';
+import Certificates from './pages/certifikat/Certificates';
 import Users from './pages/users/Users';
 
 import ProtectedRoute from './auth/ProtectedRoute';
@@ -31,6 +32,7 @@ function App() {
         <Route index element={<Navigate to="/banners" replace />} />
         <Route path="banners" element={<Banners />} />
         <Route path="services" element={<Services />} />
+        <Route path="certificates" element={<Certificates />} />
         <Route path="users" element={<Users />} />
       </Route>
 

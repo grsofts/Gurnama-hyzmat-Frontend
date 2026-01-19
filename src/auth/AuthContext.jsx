@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }) => {
     const login = async (login, password) => {
         try {
             const response = await loginService.login({ login, password });
-            
             setUser(response);
             return { success: true };
         } catch (error) {

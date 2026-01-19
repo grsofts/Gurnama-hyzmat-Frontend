@@ -1,9 +1,9 @@
-import { Avatar, Dropdown, Flex, Button, Image, Switch, Space, Typography } from "antd";
-import Icon, { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import { Avatar, Dropdown, Flex, Button, Image, Switch, Space, Typography, Modal } from "antd";
+import Icon, { MenuUnfoldOutlined, MenuFoldOutlined, ProfileFilled } from "@ant-design/icons";
 import { useTheme } from "../theme/ThemeContext";
 import { theme } from "antd";
 import { Header } from "antd/es/layout/layout";
-import { Moon, Sun } from "lucide-react";
+import { Key, LogOut, Moon, Sun, User2 } from "lucide-react";
 import { useTranslation } from 'react-i18next'
 import { useAuth } from "../hooks/useAuth";
 import { useLanguage } from "../utils/language/useLanguage";
@@ -16,7 +16,7 @@ export default function AppHeader({ collapsed, onToggleSidebar }) {
   const { token } = theme.useToken();
   const { user } = useAuth();
   
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { setLang } = useLanguage();
   const onLangChange = ({ key }) => {
     setLang(key)
@@ -43,7 +43,39 @@ export default function AppHeader({ collapsed, onToggleSidebar }) {
         </Space>
       ),
     },
-  ]
+  ];
+
+  const logout = () => {
+    Modal.confirm({
+      title: t('actions.logout'),
+      content: t('confirmation.logout'),
+      okText: t('buttons.yes'),
+      onOk: () => {
+        localStorage.removeItem('accessToken');
+        window.location.reload();
+      },
+    });
+  };
+
+  const menuProfileItems = [
+    {
+      key: '1',
+      icon: <Icon component={() => <User2  size={16}/>} />,
+      label: t('actions.profile'),
+    },
+    {
+      key: '2',
+      icon: <Icon component={() => <Key  size={16}/>} />,
+      label: t('actions.change_password'),
+    },
+    {
+      key: '3',
+      icon: <Icon component={() => <LogOut  size={16}/>} />,
+      danger: true,
+      label: t('actions.logout'),
+      onClick: logout,
+    },
+  ];
 
   return (
     <Header className="w-full shadow-sm ps-0"
@@ -90,21 +122,7 @@ export default function AppHeader({ collapsed, onToggleSidebar }) {
         </Dropdown>
 
         <Dropdown menu={{
-          items: [
-            {
-              key: '1',
-              label: 'Profile',
-            },
-            {
-              key: '2',
-              label: 'Settings',
-            },
-            {
-              key: '3',
-              label: 'Logout',
-            },
-          ],
-        }} trigger={['click']} placement="bottomCenter">
+          items: menuProfileItems}} trigger={['click']} placement="bottomCenter">
           <Flex align="center" gap={2} style={{ cursor: 'pointer' }}>
           <Flex vertical gap={0}>
             <Typography.Text>{user.name}</Typography.Text>

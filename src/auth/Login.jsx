@@ -4,63 +4,58 @@ import { useAuth } from '../hooks/useAuth';
 import './Login.css';
 import { Flex, Form, Input, Button, Checkbox, Card } from 'antd';
 import Typography from 'antd/es/typography/Typography';
+import { useTranslation } from 'react-i18next';
+import { toast } from '../utils/toast';
 
 const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
+    const { t } = useTranslation();
     const [username, setUsername] = useState("admin");
     const [password, setPassword] = useState("admin");
 
     const onSubmit = async () => {
     const res = await login(username, password);
+    
     if (res.success) {
+      toast.success(t('toasts.authorization_successful'));
       navigate("/banners", { replace: true });
+    }else{
+      toast.warning(t('toasts.login_or_password_invalid'));
+      console.log(res.message);
+      
     }
-  };
-
-  const onFinish = values => {
-    console.log('Success:', values);
-  };
-  const onFinishFailed = errorInfo => {
-    console.log('Failed:', errorInfo);
   };
 
   return (
     <Flex align='center' justify='center' className='h-screen login-container' vertical>
-        <Card className='shadow-lg'>
-            <Typography level={3} style={{ marginBottom: '20px' }}>Авторизация</Typography>
+        <Card className='shadow-lg text-center' style={{  }}>
+            <Typography level={5} style={{ marginBottom: '20px' }}>{t('authorization')}</Typography>
           <Form
             name="basic"
-            labelCol={{ span: 8 }}
+            labelCol={{ span: 5 }}
             wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 600 }}
+            style={{ maxWidth: 600, width: '500px' }}
             initialValues={{ remember: true }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
             autoComplete="off"
             >
             <Form.Item
-              label="Имя пользователя"
+              label={t('login')}
               name="username"
-              rules={[{ required: true, message: 'Пожалуйста, введите ваше имя пользователя!' }]}>
+              rules={[{ required: true, message: t('error_fields.auth.login') }]}>
               <Input value={username} onChange={e => setUsername(e.target.value)} />
             </Form.Item>
 
             <Form.Item
-              label="Пароль"
+              label={t('password')}
               name="password"
-              rules={[{ required: true, message: 'Пожалуйста, введите ваш пароль!' }]}
+              rules={[{ required: true, message: t('error_fields.auth.password') }]}
               >
               <Input.Password value={password} onChange={e => setPassword(e.target.value)} />
             </Form.Item>
-
-            <Form.Item name="remember" valuePropName="checked" label={null}>
-              <Checkbox>Запомнить меня</Checkbox>
-            </Form.Item>
-
             <Form.Item label={null}>
-              <Button type="primary" htmlType="submit" onClick={onSubmit}>
-                  Войти
+              <Button type="primary" className='mt-3' htmlType="submit" onClick={onSubmit}>
+                  {t('buttons.login')}
               </Button>
             </Form.Item>
     </Form>  

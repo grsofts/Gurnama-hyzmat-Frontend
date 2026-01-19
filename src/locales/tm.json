@@ -1,7 +1,7 @@
 {
   "menu": {
     "banners": "Bannerler",
-    "partners": "Partnýorlar",
+    "partners": "Hyzmatdaşlar",
     "certificates": "Sertifikatlar",
     "projects": "Edilen işler",
     "services": "Hyzmatlar",
@@ -13,7 +13,10 @@
     "edit": "Üýtgetmek",
     "view": "Görmek",
     "set_active": "Aktiwleşdirmek",
-    "set_inactive": "Deaktiwleşdirmek"
+    "set_inactive": "Deaktiwleşdirmek",
+    "profile": "Profil",
+    "change_password": "Açar sözüni üýtgetmek",
+    "logout": "Ulgamdan çykmak"
   },
   "column": {
     "id": "ID",
@@ -22,6 +25,8 @@
     "description": "Düşündiriş",
     "image": "Surat",
     "title": "Title",
+    "received": "Alnan",
+    "expired": "Möhleti gutarýar",
     "status": "Status",
     "created_at": "Döredilen",
     "action": "Hereket",
@@ -33,7 +38,8 @@
     "confirm": "Tassyklamak",
     "no": "Ýok",
     "save": "Ýatda sakla",
-    "yes": "Hawa"
+    "yes": "Hawa",
+    "login": "Içeri gir"
   },
   "status": {
     "active": "Aktiw",
@@ -42,7 +48,8 @@
   "confirmation": {
     "delete": "Bu elementi ýok etmek isleýärsiňizmi?",
     "inactive": "Bu elementi öçürmek isleýärsiňizmi?",
-    "active": "Bu elementi aktiwleşdirmek isleýärsiňizmi?"
+    "active": "Bu elementi aktiwleşdirmek isleýärsiňizmi?",
+    "logout": "Ulgamdan çykmak isleýärsiňizmi?"
   },
   "fields": {
     "name": "Ady",
@@ -64,6 +71,10 @@
     "order": "Tertip belgisi ýazyň"
   },
   "error_fields": {
+    "auth": {
+      "login": "Logini ýazmagyňyzy haýyş edýäris",
+      "password": "Açar sözüni ýazmagyňyzy haýyş edýäris"
+    },
     "banner":{
       "name_tm": "Türkmençe banner adyny ýazyň",
       "title_tm": "Türkmençe banner title ýazyň",
@@ -74,29 +85,29 @@
     },
     "service": {
       "name_tm": "Türkmençe hyzmat adyny ýazyň",
-      "short_desc_tm": "Türkmençe hyzmat gysga düşündirişini ýazyň",
-      "name_ru": "Русское название услуги",
-      "short_desc_ru": "Краткое описание услуги на русском",
-      "name_en": "Введите название услуги на английском",
-      "short_desc_en": "Введите краткое описание услуги на английском"
+      "short_desc_tm": "Türkmençe gysga düşündirişini ýazyň",
+      "name_ru": "Rusça hyzmat adyny ýazyň",
+      "short_desc_ru": "Rusça gysga düşündirişini ýazyň",
+      "name_en": "Iňlisçe hyzmat adyny ýazyň",
+      "short_desc_en": "Iňlisçe gysga düşündirişini ýazyň"
     },
     "project": {
       "name_tm": "Türkmençe taslama adyny ýazyň",
       "description_tm": "Türkmençe taslama düşündirişini ýazyň",
       "name_ru": "Rusça taslama adyny ýazyň",
-      "description_ru": "Введите описание проекта на русском",
-      "name_en": "Введите название проекта на английском",
-      "description_en": "Введите описание проекта на английском"
+      "description_ru": "Rusça taslama düşündirişini ýazyň",
+      "name_en": "Iňlisçe taslama adyny ýazyň",
+      "description_en": "Iňlisçe taslama düşündirişini ýazyň"
     },
     "partner": {
-      "name_tm": "Türkmençe partnýor adyny ýazyň",
-      "name_ru": "Введите название партнёра на русском",
-      "name_en": "Введите название партнёра на английском"
+      "name_tm": "Türkmençe hyzmatdaş adyny ýazyň",
+      "name_ru": "Rusça hyzmatdaş adyny ýazyň",
+      "name_en": "Iňlisçe hyzmatdaş adyny ýazyň"
     },
     "certificate": {
-      "name_tm": "Türkmençe sertifikat adyny ýazyň",
-      "name_ru": "Введите название сертификата на русском",
-      "name_en": "Введите название сертификата на английском"
+      "name": "Sertifikat adyny ýazyň",
+      "received":"Alynan senesini saýlaň",
+      "expired":"Gutarýan senäni saýlaň"
     }
   },
   "response_result":{
@@ -122,11 +133,11 @@
       "deactivate":"Taslama öçürildi"
     },
     "partner":{
-      "create":"Partnýor döredildi",
-      "update":"Partnýor üýtgedildi",
-      "delete":"Partnýor ýok edildi",
-      "activate":"Partnýor aktiwleşdirildi",
-      "deactivate":"Partnýor öçürildi"
+      "create":"Hyzmatdaş goşuldy",
+      "update":"Hyzmatdaş üýtgedildi",
+      "delete":"Hyzmatdaş ýok edildi",
+      "activate":"Hyzmatdaş aktiwleşdirildi",
+      "deactivate":"Hyzmatdaş öçürildi"
     },
     "certificate":{
       "create":"Sertifikat döredildi",
@@ -137,7 +148,10 @@
     }
   },
   "toasts":{
-    "fields_required":"Ähli zerur öýjükleri doldurmagypyzy haýyş edýäris"
+    "fields_required":"Ähli zerur öýjükleri doldurmagypyzy haýyş edýäris",
+    "login_or_password_invalid":"Nädogry ulanyjy ady ýa-da açar sözi",
+    "error_occurred":"Nädogrylyk ýüze çykdy, täzeden synanyşyň",
+    "authorization_successful":"Siz sistema girdiňiz."
   },
 
   "tooltips":{
@@ -145,14 +159,23 @@
   },
   "add_banner": "Banner goşmak",
   "add_certificate": "Sertifikat goşmak",
-  "add_partner": "Partnýor goşmak",
+  "add_partner": "hyzmatdaş goşmak",
   "add_project": "Taslama goşmak",
   "add_service": "Hyzmat goşmak",
+  "authorization": "Içine girmek",
+  "login": "Ulanyjy ady",
+  "password": "Açar sözi",
+  "remember_me": "Meni ýatda sakla",
+
   "please_fill_form_slider": "Täze slider goşmak üçin maglumatlary giriziň",
   "please_fill_form_service": "Täze hyzmat goşmak üçin maglumatlary giriziň",
   "please_fill_form_banner": "Täze banner goşmak üçin maglumatlary giriziň",
   "please_fill_form_certificate": "Täze sertifikat goşmak üçin maglumatlary giriziň",
-  "please_fill_form_partner": "Täze partnýor goşmak üçin maglumatlary giriziň",
+  "please_fill_form_partner": "Täze hyzmatdaş goşmak üçin maglumatlary giriziň",
   "please_fill_form_project": "Täze taslama goşmak üçin maglumatlary giriziň",
-  "edit_banner": "Banneri üýtgetmek"
+  "edit_banner": "Banneri üýtgetmek",
+  "edit_certificate":"Sertifikaty üýtgetmek",
+  "edit_service":"Hyzmaty üýtgetmek",
+  "edit_project":"Taslamany üýtgetmek",
+  "edit_partner":"Hyzmatdaşy üýtgetmek"
 }

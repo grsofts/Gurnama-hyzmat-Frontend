@@ -3,18 +3,18 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useServices } from "../../hooks/useServices";
-import hyzmatService from "../../api/hyzmat.service";
+import { useCertificates } from "../../hooks/useCertificates";
+import certService from "../../api/certificate.service";
 import { toast } from "../../utils/toast";
 
 import Spacer from "../../components/ui/Spacer";
-import ServiceTable from "./helper/ServiceTable";
-import AddServiceModal from "./AddServiceModal";
-import EditServiceModal from "./EditServiceModal";
+import CertTable from "./helper/CertTable";
+import AddCertModal from "./AddCertModal";
+import EditCertModal from "./EditCertModal";
 
-export default function Services() {
+export default function Certificates() {
   const { t } = useTranslation();
-  const { services, loading, setSearch, filteredData, loadServices } = useServices();
+  const { certificates, loading, setSearch, filteredData, loadCertificates } = useCertificates();
 
   const [modalState, setModalState] = useState({ edit: false, add: false, id: null });
 
@@ -38,12 +38,12 @@ export default function Services() {
       onOk: async () => {
         try {
           const result = isDelete 
-            ? await hyzmatService.deleteService(record.id)
-            : await hyzmatService.setStatus(record.id, !record.is_active);
+            ? await certService.deleteCertificate(record.id)
+            : await certService.setStatus(record.id, !record.is_active);
 
           if (result) {
-            toast.success(t(isDelete ? 'response_result.service.delete' : record.is_active ? 'response_result.service.deactivate' : 'response_result.service.activate'));
-            loadServices();
+            toast.success(t(isDelete ? 'response_result.certificate.delete' : record.is_active ? 'response_result.certificate.deactivate' : 'response_result.certificate.activate'));
+            loadCertificates();
           }
         } catch (err) {
           toast.error(err?.response?.data?.message || 'Server error');
@@ -55,23 +55,23 @@ export default function Services() {
   return (
     <Flex className="rounded-xl" vertical gap="middle">
       {/* Модальные окна */}
-      <AddServiceModal 
+       <AddCertModal 
         modalOpen={modalState.add} 
         setModalOpen={(val) => setModalState(prev => ({ ...prev, add: val }))} 
-        onSuccess={loadServices} 
-      />
-       <EditServiceModal 
+        onSuccess={loadCertificates} 
+      /> 
+       <EditCertModal 
         id={modalState.id}
         modalOpen={modalState.edit} 
         setModalOpen={(val) => setModalState(prev => ({ ...prev, edit: val }))} 
-        onSuccess={loadServices} 
-      />
+        onSuccess={loadCertificates} 
+      /> 
 
       {/* Шапка с поиском */}
       <Card styles={{ body: { padding: 16 } }} className="shadow-sm border-0">
         <Flex gap="large" align="center">
           <Typography.Title level={4} style={{ margin: 0 }} strong>
-            {t('menu.services')}
+            {t('menu.certificates')}
           </Typography.Title>
           <Spacer />
           <Input
@@ -94,9 +94,9 @@ export default function Services() {
 
       {/* Контент с таблицей */}
       <Card styles={{ body: { padding: 16 } }} className="shadow-sm border-0">
-        <ServiceTable 
+        <CertTable 
           data={filteredData} 
-          totalServices={services}
+          totalServices={certificates}
           loading={loading} 
           onAction={handleAction} 
           t={t} 
