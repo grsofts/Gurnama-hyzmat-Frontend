@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         // Проверяем, есть ли токен при загрузке
         checkAuth();
-
         return () => {
         };
     }, []);
@@ -24,7 +23,6 @@ export const AuthProvider = ({ children }) => {
             try {
                 // Проверяем валидность токена
                 const response = await loginService.me();
-
                 setUser(response);
             } catch (error) {
                 // Если токен невалидный, очищаем
@@ -41,7 +39,10 @@ export const AuthProvider = ({ children }) => {
     const login = async (login, password) => {
         try {
             const response = await loginService.login({ login, password });
-            setUser(response);
+            if(response.accessToken){
+                await checkAuth();
+            }
+            // setUser(response);
             return { success: true };
         } catch (error) {
             return { 

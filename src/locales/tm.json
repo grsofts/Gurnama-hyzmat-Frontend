@@ -59,7 +59,12 @@
     "image": "Surat",
     "link": "Link",
     "order": "Tertip belgisi",
-    "status": "Status"
+    "status": "Status",
+    "client_name" :"Müşderi ady",
+    "client_address" : "Salgysy",
+    "tags":"Teg",
+    "completed_date":"Ýerine ýetirildi",
+    "rate":"Bahalandyrma"
   },
   "placeholders": {
     "name": "Ady ýazyň",
@@ -68,7 +73,11 @@
     "description": "Düşündirişi ýazyň",
     "image": "Suraty saýlaň",
     "your_link": "/sizinlinkiniz",
-    "order": "Tertip belgisi ýazyň"
+    "order": "Tertip belgisi ýazyň",
+    "client_name" :"Müşderi adyny ýazyň",
+    "client_address" : "Salgysyny ýazyň",
+    "tags":"Meselem, #taslama, #duzedis, #gurnama",
+    "rate":"Bahalandyryň"
   },
   "error_fields": {
     "auth": {
@@ -97,7 +106,10 @@
       "name_ru": "Rusça taslama adyny ýazyň",
       "description_ru": "Rusça taslama düşündirişini ýazyň",
       "name_en": "Iňlisçe taslama adyny ýazyň",
-      "description_en": "Iňlisçe taslama düşündirişini ýazyň"
+      "description_en": "Iňlisçe taslama düşündirişini ýazyň",
+      "completed_date":"Ýerine ýetirilen senäni belläň",
+      "rate" : "Taslamany bahalandyryň",
+      "tags" : "Azyndan bir sany teg belläň"
     },
     "partner": {
       "name_tm": "Türkmençe hyzmatdaş adyny ýazyň",
@@ -159,7 +171,7 @@
   },
   "add_banner": "Banner goşmak",
   "add_certificate": "Sertifikat goşmak",
-  "add_partner": "hyzmatdaş goşmak",
+  "add_partner": "Hyzmatdaş goşmak",
   "add_project": "Taslama goşmak",
   "add_service": "Hyzmat goşmak",
   "authorization": "Içine girmek",

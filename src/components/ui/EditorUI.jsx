@@ -21,7 +21,7 @@ export default function EditorUI({value = "", placeholder, onChange, radius = 6}
           [{ list: "ordered" }, { list: "bullet" }],
           [{ align: [] }],
           ['link'],
-          ["image"],
+          // ["image"],
           ["clean"],
         ],
       },

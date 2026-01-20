@@ -10,6 +10,8 @@ import Banners from './pages/banners/Banners';
 import Services from './pages/services/Services';
 import Certificates from './pages/certifikat/Certificates';
 import Users from './pages/users/Users';
+import Partners from './pages/partners/Partners';
+import Projects from './pages/projects/Projects';
 
 import ProtectedRoute from './auth/ProtectedRoute';
 
@@ -34,6 +36,8 @@ function App() {
         <Route path="services" element={<Services />} />
         <Route path="certificates" element={<Certificates />} />
         <Route path="users" element={<Users />} />
+        <Route path="partners" element={<Partners />} />
+        <Route path="projects" element={<Projects />} />
       </Route>
 
       {/* FALLBACK */}

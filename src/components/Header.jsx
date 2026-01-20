@@ -123,12 +123,12 @@ export default function AppHeader({ collapsed, onToggleSidebar }) {
 
         <Dropdown menu={{
           items: menuProfileItems}} trigger={['click']} placement="bottomCenter">
-          <Flex align="center" gap={2} style={{ cursor: 'pointer' }}>
-          <Flex vertical gap={0}>
-            <Typography.Text>{user.name}</Typography.Text>
-            <Typography.Text type="secondary">{user.username}</Typography.Text>
-          </Flex>
-          <Avatar bordered size={40} src='https://avatar.iran.liara.run/public/33' alt="" />
+          <Flex align="center" gap={5} style={{ cursor: 'pointer' }}>
+            <Flex align="end" vertical gap={0}>
+              <Typography.Text>{user.name}</Typography.Text>
+              <Typography.Text type="secondary">{user.username}</Typography.Text>
+            </Flex>
+          <Avatar bordered size={40} src={`https://ui-avatars.com/api/?name=${user.name}&bold=true`} alt="" />
           </Flex>
         </Dropdown>
       </Flex>

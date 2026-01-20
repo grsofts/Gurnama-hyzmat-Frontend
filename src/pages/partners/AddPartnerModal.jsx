@@ -1,15 +1,13 @@
-import { Form, Modal, Input, Image, Flex, Switch, Upload, DatePicker } from "antd";
+import { Form, Modal, Input, Tabs, Image, Flex, Space, Divider, Switch, Upload, Checkbox, Tooltip, DatePicker } from "antd";
 import { Info, InfoIcon, LucideInfo, PlusCircleIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import certService from "../../api/certificate.service";
+import { useState } from "react";
+import partnerService from "../../api/partner.service";
 import { toast } from "../../utils/toast";
 import { useTranslation } from "react-i18next";
 import { getBase64 } from "../../utils/utils";
-import dayjs from "dayjs";
-import http from "../../api/http";
 
 
-export default function EditCertModal({ modalOpen, setModalOpen, onSuccess, id }) {
+export default function AddPartnerModal({ modalOpen, setModalOpen, onSuccess }) {
 
   const { t } = useTranslation();
 
@@ -20,24 +18,6 @@ export default function EditCertModal({ modalOpen, setModalOpen, onSuccess, id }
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
 
-  useEffect(() => {
-    if (modalOpen && id) {
-      // Fetch certificate data by ID and populate the form
-      const fetchCertificate = async () => {
-        const result = await certService.getCertificateById(id);
-        
-        setActive(result.is_active);
-        form.setFieldsValue({
-          name: result.name,
-          received: dayjs(result.received),
-          expired: dayjs(result.expired)
-        });
-        const initialImages = [{ uid: '-1', name: 'image.png', status: 'done', url: `${http.defaults.baseURL}/uploads${result.image}` }];
-        setImages(initialImages);
-      };
-      fetchCertificate();
-    }
-  }, [id, modalOpen, form]);
 
   const handlePreview = async file => {
     if (!file.url && !file.preview) {
@@ -70,8 +50,6 @@ export default function EditCertModal({ modalOpen, setModalOpen, onSuccess, id }
       const payload = {
         is_active: active,
         name: values.name,
-        received: values.received ? values.received.format('YYYY-MM-DD') : null,
-        expired: values.expired ? values.expired.format('YYYY-MM-DD') : null,
       };
 
       const formData = new FormData();
@@ -84,15 +62,14 @@ export default function EditCertModal({ modalOpen, setModalOpen, onSuccess, id }
         formData.append('image', images[0].originFileObj);
       }
 
-
       // Отправка формы
-      const result = await certService.updateCertificate(id, formData);
+      const result = await partnerService.createPartner(formData);
       if (result) {
         setModalOpen(false);
         form.resetFields();
         setImages([]);
         setActive(true);
-        toast.success(t('response_result.certificate.update'));
+        toast.success(t('response_result.partner.create'));
       }
     }catch(error){
       const message =
@@ -119,7 +96,7 @@ export default function EditCertModal({ modalOpen, setModalOpen, onSuccess, id }
 
   return (
     <Modal 
-      title={t('edit_certificate')}
+      title={t('add_partner')}
       open={modalOpen} 
       onCancel={() => setModalOpen(false)} 
       onOk={handleSubmit}
@@ -130,8 +107,10 @@ export default function EditCertModal({ modalOpen, setModalOpen, onSuccess, id }
       closable={false}
       wrapProps={{ onClick: e => e.stopPropagation() }}
       okText={t('buttons.save')}>
+      <p>{t('please_fill_form_certificate')}</p>
       <Form form={form} layout="vertical" initialValues={{ order: 0 }}>
         
+        <Divider />
         <Flex direction="column" gap={7} vertical>
           <Form.Item label={t('fields.name')} name="name" rules={[{ required: true, message: t('error_fields.certificate.name') }]}>
             <Input disabled={load} placeholder={t('placeholders.name')} />
@@ -139,7 +118,6 @@ export default function EditCertModal({ modalOpen, setModalOpen, onSuccess, id }
         </Flex>
 
         <Form.Item name='image'>
-          <Flex>
           <Upload
             listType="picture-card"
             fileList={images}
@@ -163,17 +141,12 @@ export default function EditCertModal({ modalOpen, setModalOpen, onSuccess, id }
                 src={previewImage}
               />
             )}
-            </Flex>
         </Form.Item>
 
         <Flex direction="column" gap={7} horizontal>
-            <Form.Item label={t('column.received')} name="received" rules={[{ required: true, message: t('error_fields.certificate.received') }]}>
-              <DatePicker format={'DD.MM.YYYY'} disabled={load} placeholder={t('column.received')} />
-            </Form.Item>
-            <Form.Item label={t('column.expired')} name="expired" rules={[{ required: true, message: t('error_fields.certificate.expired') }]}>
-              <DatePicker format={'DD.MM.YYYY'} disabled={load} placeholder={t('column.expired')} />
-            </Form.Item>
+           
         </Flex>
+
         <Flex direction="column" gap={5} horizontal>
           <Switch checked={active} onChange={setActive} disabled={load} /> <span>{t('status.active')}</span>
         </Flex>
@@ -181,3 +154,4 @@ export default function EditCertModal({ modalOpen, setModalOpen, onSuccess, id }
     </Modal>
   )
 }
+
