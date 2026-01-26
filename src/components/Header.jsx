@@ -8,6 +8,9 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from "../hooks/useAuth";
 import { useLanguage } from "../utils/language/useLanguage";
 import Spacer from "./ui/Spacer";
+import { useState } from "react";
+import ModalProfile from "./ModalProfile";
+
 
 
 
@@ -18,6 +21,12 @@ export default function AppHeader({ collapsed, onToggleSidebar }) {
   
   const { t, i18n } = useTranslation()
   const { setLang } = useLanguage();
+  const [modalState, setModalState] = useState({ 
+    open: false, 
+    mode: null, //'create' | 'edit-self' | 'edit-user'
+    userId: null 
+  });
+
   const onLangChange = ({ key }) => {
     setLang(key)
     i18n.changeLanguage(key)
@@ -62,12 +71,11 @@ export default function AppHeader({ collapsed, onToggleSidebar }) {
       key: '1',
       icon: <Icon component={() => <User2  size={16}/>} />,
       label: t('actions.profile'),
+      onClick: () => {
+        setModalState({ ...modalState, mode: 'edit-self', open: true });
+      }
     },
-    {
-      key: '2',
-      icon: <Icon component={() => <Key  size={16}/>} />,
-      label: t('actions.change_password'),
-    },
+    
     {
       key: '3',
       icon: <Icon component={() => <LogOut  size={16}/>} />,
@@ -87,6 +95,10 @@ export default function AppHeader({ collapsed, onToggleSidebar }) {
         backgroundColor: token.colorBgContainer,
         borderBottom: `1px solid ${token.colorBorderSecondary}`,
       }}>
+
+      <ModalProfile open={modalState.open} mode={modalState.mode} userId={modalState.userId} onClose={() =>
+        setModalState({ open: false, mode: null, userId: null })
+      }  />
 
       <Flex gap="large" align="center" justify="center" className="" horizontal>
         <Button type="text" onClick={onToggleSidebar}>

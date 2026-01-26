@@ -64,7 +64,10 @@
     "client_address" : "Salgysy",
     "tags":"Teg",
     "completed_date":"Ýerine ýetirildi",
-    "rate":"Bahalandyrma"
+    "rate":"Bahalandyrma",
+    "user_name": "Ulanyjynyň ady",
+    "password": "Açar sözi",
+    "user_password_confirm": "Açar sözüni tassyklaň"
   },
   "placeholders": {
     "name": "Ady ýazyň",

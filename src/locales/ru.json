@@ -64,7 +64,10 @@
     "client_address": "Адрес клиента",
     "tags": "Теги",
     "completed_date": "Дата завершения",
-    "rate": "Оценка"
+    "rate": "Оценка",
+    "user_name": "Имя пользователя",
+    "user_password": "Пароль пользователя",
+    "user_password_confirm": "Подтвердите пароль пользователя"
   },
   "placeholders": {
     "name": "Введите название",

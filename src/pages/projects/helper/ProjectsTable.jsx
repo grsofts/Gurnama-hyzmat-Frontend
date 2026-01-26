@@ -27,6 +27,11 @@ const ProjectsTable = ({ data, loading, onAction, t, totalProjects }) => {
       disabled: totalProjects.filter(b => b.is_active).length === 1 && record.is_active,
     },
   ];
+
+  data.forEach((item, index) => {
+    console.log(index + 1, item.images);
+    
+  });
   return (
     <Table 
       size="small" 
@@ -38,11 +43,11 @@ const ProjectsTable = ({ data, loading, onAction, t, totalProjects }) => {
       <Column title="№" width={50} render={(_, __, index) => index + 1} />
       <Column 
         title={t('column.image')} 
-        dataIndex="image" 
+        dataIndex="images" 
         width={120} 
         render={(img) => (
           <Image 
-            src={`${http.defaults.baseURL}/uploads/${img}`} 
+            src={`${http.defaults.baseURL}/uploads/${img[0].image_url}`} 
             width={100} 
             fallback={placeholder}
             preview={img != undefined}
@@ -52,6 +57,7 @@ const ProjectsTable = ({ data, loading, onAction, t, totalProjects }) => {
       />
       <Column title={t('column.title')} dataIndex="title" />
       <Column title={t('column.short_desc')} dataIndex="short_desc" />
+      <Column title={t('fields.client_address')} dataIndex="address" />
       <Column 
         title={t('column.status')} 
         dataIndex="is_active" 
@@ -61,7 +67,7 @@ const ProjectsTable = ({ data, loading, onAction, t, totalProjects }) => {
             : <Tag color="red" variant="outlined">{t('status.inactive')}</Tag>
         )} 
       />
-      <Column title={t('column.created_at')} dataIndex="createdAt" render={formatDateTime} />
+      <Column title={t('fields.completed_date')} dataIndex="completed" render={formatDateTime} />
       <Column title={t('column.order')} dataIndex="sort_order" />
       <Column 
         title={t('column.action')} 

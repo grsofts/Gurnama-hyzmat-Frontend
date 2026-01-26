@@ -95,7 +95,7 @@ export default function Projects() {
       <Card styles={{ body: { padding: 16 } }} className="shadow-sm border-0">
         <ProjectsTable 
           data={filteredData} 
-          totalProjects={projects.length}
+          totalProjects={projects}
           loading={loading} 
           onAction={handleAction} 
           t={t} 

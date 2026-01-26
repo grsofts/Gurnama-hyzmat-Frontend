@@ -2,7 +2,7 @@ import { Table, Image, Tag, Dropdown, Button } from "antd";
 import Column from "antd/es/table/Column";
 import { EllipsisVertical, Pencil, Trash, CircleX, CircleCheck } from "lucide-react";
 import http from "../../../api/http";
-import { formatDateTime, formatOnlyDate } from '../../../utils/utils';
+import { formatDateTime } from '../../../utils/utils';
 import placeholder from '../../../assets/placeholder.jpg';
 
 const PartnerTable = ({ data, loading, onAction, t, totalServices }) => {
@@ -51,8 +51,6 @@ const PartnerTable = ({ data, loading, onAction, t, totalServices }) => {
         )} 
       />
       <Column title={t('column.name')} dataIndex="name" />
-        <Column title={t('column.received')} dataIndex="received" render={formatOnlyDate} />
-        <Column title={t('column.expired')} dataIndex="expired" render={formatOnlyDate} />
       <Column 
         title={t('column.status')} 
         dataIndex="is_active" 
