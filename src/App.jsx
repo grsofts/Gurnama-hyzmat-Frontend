@@ -12,6 +12,7 @@ import Certificates from './pages/certifikat/Certificates';
 import Users from './pages/users/Users';
 import Partners from './pages/partners/Partners';
 import Projects from './pages/projects/Projects';
+import Settings from './pages/settings/Setting';
 
 import ProtectedRoute from './auth/ProtectedRoute';
 
@@ -38,6 +39,7 @@ function App() {
         <Route path="users" element={<Users />} />
         <Route path="partners" element={<Partners />} />
         <Route path="projects" element={<Projects />} />
+        <Route path="others" element={<Settings />} />
       </Route>
 
       {/* FALLBACK */}

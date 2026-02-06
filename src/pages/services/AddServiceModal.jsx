@@ -77,10 +77,6 @@ export default function AddServiceModal({ modalOpen, setModalOpen, onSuccess }) 
         formData.append('image_en', images.en[0].originFileObj);
       }
 
-      for (const [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
-
       // Отправка формы
       const result = await hyzmatService.createService(formData);
       if (result) {

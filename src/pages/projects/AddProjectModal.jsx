@@ -47,7 +47,6 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
       }
       const values = await form.validateFields();
 
-      console.log(values);
       // return;
       
       

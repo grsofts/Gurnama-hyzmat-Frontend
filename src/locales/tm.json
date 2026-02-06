@@ -5,6 +5,7 @@
     "certificates": "Sertifikatlar",
     "projects": "Edilen işler",
     "services": "Hyzmatlar",
+    "others": "Başga",
     "users": "Ulanyjylar"
   },
   "showmore": "Has köp görkez",
@@ -31,7 +32,8 @@
     "created_at": "Döredilen",
     "action": "Hereket",
     "order": "Tertip belgisi",
-    "updated_at": "Üýtgedilen"
+    "updated_at": "Üýtgedilen",
+    "value": "Belgi"
   },
   "buttons": {
     "add": "Täze goş",
@@ -39,7 +41,8 @@
     "no": "Ýok",
     "save": "Ýatda sakla",
     "yes": "Hawa",
-    "login": "Içeri gir"
+    "login": "Içeri gir",
+    "edit": "Üýtgetmek"
   },
   "status": {
     "active": "Aktiw",
@@ -60,14 +63,25 @@
     "link": "Link",
     "order": "Tertip belgisi",
     "status": "Status",
-    "client_name" :"Müşderi ady",
-    "client_address" : "Salgysy",
-    "tags":"Teg",
-    "completed_date":"Ýerine ýetirildi",
-    "rate":"Bahalandyrma",
+    "client_name": "Müşderi ady",
+    "client_address": "Salgysy",
+    "tags": "Teg",
+    "completed_date": "Ýerine ýetirildi",
+    "rate": "Bahalandyrma",
     "user_name": "Ulanyjynyň ady",
     "password": "Açar sözi",
-    "user_password_confirm": "Açar sözüni tassyklaň"
+    "user_password_confirm": "Açar sözüni tassyklaň",
+    "footer_text": "Futerdäki tekst",
+    "full_text": "Doly tekst",
+    "short_text": "Gysga tekst",
+    "small_image": "Kiçi surat",
+    "large_image": "Uly surat",
+    "user_password": "Ulanyjy açar sözi",
+    "value": "Belgi",
+    "key": "Açary",
+    "contact_type": "Kontakt görnüşi",
+    "contact_link": "Kontakt linki",
+    "icon":"Ikona"
   },
   "placeholders": {
     "name": "Ady ýazyň",
@@ -77,17 +91,25 @@
     "image": "Suraty saýlaň",
     "your_link": "/sizinlinkiniz",
     "order": "Tertip belgisi ýazyň",
-    "client_name" :"Müşderi adyny ýazyň",
-    "client_address" : "Salgysyny ýazyň",
-    "tags":"Meselem, #taslama, #duzedis, #gurnama",
-    "rate":"Bahalandyryň"
+    "client_name": "Müşderi adyny ýazyň",
+    "client_address": "Salgysyny ýazyň",
+    "tags": "Meselem, #taslama, #duzedis, #gurnama",
+    "rate": "Bahalandyryň",
+    "footer_text": "Futerdäki teksti ýazyň",
+    "full_text": "Doly teksti ýazyň",
+    "short_text": "Gysga teksti ýazyň",
+    "value": "Belgi ýazyň",
+    "key": "Açar ýazyň",
+    "contact_link": "Meselem, https://social/@sizinprofiliniz",
+    "contact_type": "Kontakt görnüşini saýlaň"
+
   },
   "error_fields": {
     "auth": {
       "login": "Logini ýazmagyňyzy haýyş edýäris",
       "password": "Açar sözüni ýazmagyňyzy haýyş edýäris"
     },
-    "banner":{
+    "banner": {
       "name_tm": "Türkmençe banner adyny ýazyň",
       "title_tm": "Türkmençe banner title ýazyň",
       "name_ru": "Rusça banner ady ýazyň",
@@ -110,9 +132,9 @@
       "description_ru": "Rusça taslama düşündirişini ýazyň",
       "name_en": "Iňlisçe taslama adyny ýazyň",
       "description_en": "Iňlisçe taslama düşündirişini ýazyň",
-      "completed_date":"Ýerine ýetirilen senäni belläň",
-      "rate" : "Taslamany bahalandyryň",
-      "tags" : "Azyndan bir sany teg belläň"
+      "completed_date": "Ýerine ýetirilen senäni belläň",
+      "rate": "Taslamany bahalandyryň",
+      "tags": "Azyndan bir sany teg belläň"
     },
     "partner": {
       "name_tm": "Türkmençe hyzmatdaş adyny ýazyň",
@@ -121,76 +143,103 @@
     },
     "certificate": {
       "name": "Sertifikat adyny ýazyň",
-      "received":"Alynan senesini saýlaň",
-      "expired":"Gutarýan senäni saýlaň"
+      "received": "Alynan senesini saýlaň",
+      "expired": "Gutarýan senäni saýlaň"
+    },
+    "about": {
+      "short_text_tm": "Türkmençe \"Biz barada\" gysga tekstini ýazyň",
+      "short_text_en": "Iňlisçe \"Biz barada\" gysga tekstini ýazyň",
+      "short_text_ru": "Rusça \"Biz barada\" gysga tekstini ýazyň",
+      "footer_text_tm": "Türkmençe \"Biz barada\" futerdäki tekstini ýazyň",
+      "footer_text_ru": "Rusça \"Biz barada\" futerdäki tekstini ýazyň",
+      "footer_text_en": "Iňlisçe \"Biz barada\" futerdäki tekstini ýazyň",
+      "contact_link":"Linki ýazyň"
     }
   },
-  "response_result":{
-    "banner":{
-      "create":"Banner döredildi",
-      "update":"Banner üýtgedildi",
-      "delete":"Banner ýok edildi",
-      "activate":"Banner aktiwleşdirildi",
-      "deactivate":"Banner öçürildi"
+  "response_result": {
+    "banner": {
+      "create": "Banner döredildi",
+      "update": "Banner üýtgedildi",
+      "delete": "Banner ýok edildi",
+      "activate": "Banner aktiwleşdirildi",
+      "deactivate": "Banner öçürildi"
     },
-    "service":{
-      "create":"Hyzmat döredildi",
-      "update":"Hyzmat üýtgedildi",
-      "delete":"Hyzmat ýok edildi",
-      "activate":"Hyzmat aktiwleşdirildi",
-      "deactivate":"Hyzmat öçürildi"
+    "service": {
+      "create": "Hyzmat döredildi",
+      "update": "Hyzmat üýtgedildi",
+      "delete": "Hyzmat ýok edildi",
+      "activate": "Hyzmat aktiwleşdirildi",
+      "deactivate": "Hyzmat öçürildi"
     },
-    "project":{
-      "create":"Taslama döredildi",
-      "update":"Taslama üýtgedildi",
-      "delete":"Taslama ýok edildi",
-      "activate":"Taslama aktiwleşdirildi",
-      "deactivate":"Taslama öçürildi"
+    "project": {
+      "create": "Taslama döredildi",
+      "update": "Taslama üýtgedildi",
+      "delete": "Taslama ýok edildi",
+      "activate": "Taslama aktiwleşdirildi",
+      "deactivate": "Taslama öçürildi"
     },
-    "partner":{
-      "create":"Hyzmatdaş goşuldy",
-      "update":"Hyzmatdaş üýtgedildi",
-      "delete":"Hyzmatdaş ýok edildi",
-      "activate":"Hyzmatdaş aktiwleşdirildi",
-      "deactivate":"Hyzmatdaş öçürildi"
+    "partner": {
+      "create": "Hyzmatdaş goşuldy",
+      "update": "Hyzmatdaş üýtgedildi",
+      "delete": "Hyzmatdaş ýok edildi",
+      "activate": "Hyzmatdaş aktiwleşdirildi",
+      "deactivate": "Hyzmatdaş öçürildi"
     },
-    "certificate":{
-      "create":"Sertifikat döredildi",
-      "update":"Sertifikat üýtgedildi",
-      "delete":"Sertifikat ýok edildi",
-      "activate":"Sertifikat aktiwleşdirildi",
-      "deactivate":"Sertifikat öçürildi"
+    "certificate": {
+      "create": "Sertifikat döredildi",
+      "update": "Sertifikat üýtgedildi",
+      "delete": "Sertifikat ýok edildi",
+      "activate": "Sertifikat aktiwleşdirildi",
+      "deactivate": "Sertifikat öçürildi"
+    },
+    "about": {
+      "update": "\"Biz barada\" maglumatlar üýtgedildi"
+    },
+    "contact": {
+      "create": "Kontakt goşuldy",
+      "update": "Kontakt üýtgedildi",
+      "delete": "Kontakt ýok edildi"
     }
   },
-  "toasts":{
-    "fields_required":"Ähli zerur öýjükleri doldurmagypyzy haýyş edýäris",
-    "login_or_password_invalid":"Nädogry ulanyjy ady ýa-da açar sözi",
-    "error_occurred":"Nädogrylyk ýüze çykdy, täzeden synanyşyň",
-    "authorization_successful":"Siz sistema girdiňiz."
+  "toasts": {
+    "fields_required": "Ähli zerur öýjükleri doldurmagypyzy haýyş edýäris",
+    "login_or_password_invalid": "Nädogry ulanyjy ady ýa-da açar sözi",
+    "error_occurred": "Nädogrylyk ýüze çykdy, täzeden synanyşyň",
+    "authorization_successful": "Siz sistema girdiňiz."
   },
-
-  "tooltips":{
-    "custom_link":"Başga saýt - ulanyjy bannere basanda saýtdan siziň bellän linkiňize ugradylar, eger-de ýok bolsa, standart linke ugradylar"
+  "tooltips": {
+    "custom_link": "Başga saýt - ulanyjy bannere basanda saýtdan siziň bellän linkiňize ugradylar, eger-de ýok bolsa, standart linke ugradylar"
+  },
+  "contact_types": {
+    "social": "Sosial ulgam",
+    "phone": "Telefon",
+    "email": "Email",
+    "text": "Adaty"
   },
   "add_banner": "Banner goşmak",
   "add_certificate": "Sertifikat goşmak",
   "add_partner": "Hyzmatdaş goşmak",
   "add_project": "Taslama goşmak",
   "add_service": "Hyzmat goşmak",
+  "add_contact": "Kontakt goşmak",
   "authorization": "Içine girmek",
   "login": "Ulanyjy ady",
   "password": "Açar sözi",
   "remember_me": "Meni ýatda sakla",
-
   "please_fill_form_slider": "Täze slider goşmak üçin maglumatlary giriziň",
   "please_fill_form_service": "Täze hyzmat goşmak üçin maglumatlary giriziň",
   "please_fill_form_banner": "Täze banner goşmak üçin maglumatlary giriziň",
   "please_fill_form_certificate": "Täze sertifikat goşmak üçin maglumatlary giriziň",
   "please_fill_form_partner": "Täze hyzmatdaş goşmak üçin maglumatlary giriziň",
   "please_fill_form_project": "Täze taslama goşmak üçin maglumatlary giriziň",
+  "please_fill_form_contact": "Täze kontakt goşmak üçin maglumatlary giriziň",
   "edit_banner": "Banneri üýtgetmek",
-  "edit_certificate":"Sertifikaty üýtgetmek",
-  "edit_service":"Hyzmaty üýtgetmek",
-  "edit_project":"Taslamany üýtgetmek",
-  "edit_partner":"Hyzmatdaşy üýtgetmek"
+  "edit_certificate": "Sertifikaty üýtgetmek",
+  "edit_service": "Hyzmaty üýtgetmek",
+  "edit_project": "Taslamany üýtgetmek",
+  "edit_partner": "Hyzmatdaşy üýtgetmek",
+  "edit_about": "Biz barada tekstlerini üýtgetmek",
+  "edit_contact": "Kontakt üýtgetmek",
+  "about_us": "Biz barada",
+  "contacts": "Kontaktlar"
 }

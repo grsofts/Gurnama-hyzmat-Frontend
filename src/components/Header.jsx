@@ -12,8 +12,6 @@ import { useState } from "react";
 import ModalProfile from "./ModalProfile";
 
 
-
-
 export default function AppHeader({ collapsed, onToggleSidebar }) {
   const { isDark, toggleTheme } = useTheme();
   const { token } = theme.useToken();
