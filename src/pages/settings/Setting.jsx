@@ -20,31 +20,28 @@ export default function Settings() {
   const { about, loading, loadAbout, contacts, loadContacts } = useAbout();
 
   const [aboutModalState, setAboutModalState] = useState(false);
-  const [contactModalState, setContactModalState] = useState({ open:false, mode: null, id: null });
+  const [contactModalState, setContactModalState] = useState({ open:false, mode: null, contact: null });
 
 
   // Универсальный обработчик действий (Actions)
   const handleAction = (key, record) => {
     if (key === "edit") {
-      setContactModalState({ ...contactModalState, open: true, mode: 'edit', id: record.id });
+      setContactModalState({ ...contactModalState, open: true, mode: 'edit', contact: record });
       return;
     }
 
-    const isDelete = key === "delete";
-    const content = isDelete 
-      ? t('confirmation.delete') 
-      : (record.is_active ? t('confirmation.inactive') : t('confirmation.active'));
+    const content =  t('confirmation.delete');
 
     Modal.confirm({
       title: t('buttons.confirm'),
       content: content,
       okText: t('buttons.confirm'),
-      okType: isDelete || record.is_active ? 'danger' : 'primary',
+      okType: 'danger',
       onOk: async () => {
         try {
           const result = await settingService.deleteContact(record.id);
           if (result) {
-            toast.success(t(isDelete ? 'response_result.service.delete' : record.is_active ? 'response_result.service.deactivate' : 'response_result.service.activate'));
+            toast.success(t('response_result.contact.delete'));
             loadContacts();
             loadAbout();
           }
@@ -56,7 +53,7 @@ export default function Settings() {
   };
 
   const closeModal = () => {
-    setContactModalState({ open: false, mode: null, id: null });
+    setContactModalState({ open: false, mode: null, contact: null });
   };
 
   return (

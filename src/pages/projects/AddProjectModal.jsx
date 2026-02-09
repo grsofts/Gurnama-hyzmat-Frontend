@@ -53,6 +53,10 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
       const payload = {
         sort_order: Number(values.order),
         is_active: active,
+        client_name: values.client_name,
+        address: values.client_address,
+        completed: values.completed.format('YYYY-MM-DD'),
+        tags: values.tags,
         translations: values.translation
       };
 
@@ -124,8 +128,8 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
               <Input.TextArea disabled={load} title={t('fields.short_desc')} maxLength={250} showCount name="short_desc" width={'100%'} placeholder={ `${t('placeholders.short_desc')} (TM)`} />
           </Form.Item>
 
-          <Form.Item title={t('fields.description')} name={['translation', 'tm', 'desc']}>
-            <EditorUI placeholder={`${t('placeholders.description')} (TM)`} value={form.getFieldValue(['translation', 'tm', 'desc'])} onChange={value => form.setFieldValue(['translation', 'tm', 'desc'], value)} radius={8}/>
+          <Form.Item title={t('fields.description')} name={['translation', 'tm', 'full_desc']}>
+            <EditorUI placeholder={`${t('placeholders.description')} (TM)`} value={form.getFieldValue(['translation', 'tm', 'full_desc'])} onChange={value => form.setFieldValue(['translation', 'tm', 'full_desc'], value)} radius={8}/>
           </Form.Item>
         </Flex>
       )
@@ -155,8 +159,8 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
             <Input.TextArea disabled={load} title={t('fields.short_desc')} maxLength={500} showCount name="short_desc" width={'100%'} placeholder={`${t('placeholders.short_desc')} (RU)`} />
           </Form.Item>
 
-          <Form.Item name={['translation', 'ru', 'desc']}>
-            <EditorUI placeholder={`${t('placeholders.description')} (RU)`} value={form.getFieldValue(['translation', 'ru', 'desc'])} onChange={value => form.setFieldValue(['translation', 'ru', 'desc'], value)} radius={8}/>
+          <Form.Item name={['translation', 'ru', 'full_desc']}>
+            <EditorUI placeholder={`${t('placeholders.description')} (RU)`} value={form.getFieldValue(['translation', 'ru', 'full_desc'])} onChange={value => form.setFieldValue(['translation', 'ru', 'full_desc'], value)} radius={8}/>
           </Form.Item>
         </Flex>
       )
@@ -186,8 +190,8 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
               <Input.TextArea disabled={load} title={t('fields.short_desc')} maxLength={500} showCount name="short_desc" width={'100%'} placeholder={`${t('placeholders.short_desc')} (EN)`} />
           </Form.Item>
 
-          <Form.Item name={['translation', 'en', 'desc']}>
-            <EditorUI placeholder={`${t('placeholders.description')} (EN)`} value={form.getFieldValue(['translation', 'en', 'desc'])} onChange={value => form.setFieldValue(['translation', 'en', 'desc'], value)} radius={8}/>
+          <Form.Item name={['translation', 'en', 'full_desc']}>
+            <EditorUI placeholder={`${t('placeholders.description')} (EN)`} value={form.getFieldValue(['translation', 'en', 'full_desc'])} onChange={value => form.setFieldValue(['translation', 'en', 'full_desc'], value)} radius={8}/>
           </Form.Item>
         </Flex>
       )

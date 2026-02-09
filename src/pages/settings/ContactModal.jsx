@@ -1,11 +1,12 @@
-import { Form, Modal, Input, Tabs, Image, Flex, Space, Divider, Switch, Upload, Checkbox, Tooltip, Select } from "antd";
-import { Info, InfoIcon, LucideInfo, PlusCircleIcon } from "lucide-react";
-import { useState } from "react";
-import hyzmatService from "../../api/hyzmat.service";
+import { Form, Modal, Input, Image, Flex, Divider, Upload, Select } from "antd";
+import { PlusCircleIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import settingService from "../../api/setting.service";
 import { toast } from "../../utils/toast";
 import { useTranslation } from "react-i18next";
 import { getBase64 } from "../../utils/utils";
 import 'quill/dist/quill.snow.css';
+import http from "../../api/http";
 
 export default function ContactModal({ modalOpen, onClose, onSuccess }) {
 
@@ -13,25 +14,57 @@ export default function ContactModal({ modalOpen, onClose, onSuccess }) {
 
   const [form] = Form.useForm();
   const [load, setLoad] = useState(false);
-  const [icon, setIcon] = useState(null);
+  
+  const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
 
-  const handlePreview = async file => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
+  useEffect(() => {
+    if (!modalOpen.open) {
+      form.resetFields();
+      setFileList([]);
+      setPreviewImage('');
+      setPreviewOpen(false);
+      setLoad(false);
+      return;
     }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  };
 
-  const handleChange = () => ({ fileList }) => {
-    setIcon(fileList);
-  };
-  const BeforeUpload = () => (file) => {
-    setIcon(file);
-    return false; // запрет авто-upload
-  };
+    const contact = modalOpen.contact;
+    // Reset preview image when modal is closed
+    if (modalOpen.open && modalOpen.mode === 'edit' && modalOpen.contact) {
+      form.setFieldsValue({
+        "title": contact.title,
+        "key": contact.key,
+        "type": contact.type,
+        "value": contact.value,
+        "link": contact.link,
+        "order": contact.order
+      });
+      if (contact.icon) {
+        setFileList([
+          {
+            uid: "-1",
+            name: "icon.svg",
+            status: "done",
+            url: http.defaults.baseURL + "/uploads" + contact.icon,
+          },
+        ]);
+      }
+    }
+  }, [modalOpen, form]);
+
+  const handleChange = ({ fileList }) => setFileList(fileList);
+
+  
+  const handlePreview = async (file) => {
+  if (file.url) {
+    setPreviewImage(file.url);
+  } else if (file.originFileObj) {
+    const base64 = await getBase64(file.originFileObj);
+    setPreviewImage(base64);
+  }
+  setPreviewOpen(true);
+};
 
   const handleSubmit = async () => {
     try{
@@ -46,8 +79,12 @@ export default function ContactModal({ modalOpen, onClose, onSuccess }) {
       const values = await form.validateFields();
       
       const payload = {
-        sort_order: Number(values.order),
-        translations: values.translation
+        order: Number(values.order),
+        title: values.title,
+        key: values.key,
+        type: values.type,
+        value: values.value,
+        link: values.link || '',
       };
 
       const formData = new FormData();
@@ -56,8 +93,8 @@ export default function ContactModal({ modalOpen, onClose, onSuccess }) {
       formData.append('data', JSON.stringify(payload));
 
       // Картинки
-      if (icon?.originFileObj) {
-        formData.append('icon', icon.originFileObj);
+      if (fileList.length > 0 && fileList[0].originFileObj) {
+        formData.append("icon", fileList[0].originFileObj);
       }
 
       for (const [key, value] of formData.entries()) {
@@ -65,13 +102,15 @@ export default function ContactModal({ modalOpen, onClose, onSuccess }) {
       }
 
       // Отправка формы
-      const result = await hyzmatService.createService(formData);
-      if (result) {
-        onClose();
-        form.resetFields();
-        setIcon(null);
-        toast.success(t('response_result.service.create'));
+      if(modalOpen.mode === 'edit'){
+        await settingService.updateContact(modalOpen.contact.id, formData);
+        toast.success(t('response_result.contact.update'));
+      } else {
+        await settingService.createContact(formData);
+        toast.success(t('response_result.contact.create'));
       }
+      onClose();
+      onSuccess?.();
     }catch(error){
       const message =
       error?.response?.data?.message ||
@@ -79,9 +118,6 @@ export default function ContactModal({ modalOpen, onClose, onSuccess }) {
       'Server error';
       toast.warning(message);
     }finally{
-      if (onSuccess) {
-          onSuccess(); 
-        }
       setLoad(false);
     }
   };
@@ -110,11 +146,15 @@ export default function ContactModal({ modalOpen, onClose, onSuccess }) {
       width={600}
       cancelButtonProps={{hidden:load}}
       confirmLoading={load}
-      okButtonProps={{disabled:form.getFieldsError().some(({ errors }) => errors.length) || icon != null }}
+      okButtonProps={{disabled:form.getFieldsError().some(({ errors }) => errors.length) || fileList.length === 0 }}
       closable={false}
       wrapProps={{ onClick: e => e.stopPropagation() }}
       okText={t('buttons.save')}>
-      <p>{t('please_fill_form_contact')}</p>
+        {
+          modalOpen.mode === 'add' ? (
+          <p>{t('please_fill_form_contact')}</p>
+        ) : null
+        }
       <Form form={form} layout="vertical" initialValues={{ order: 0 }}>
         <Divider />
 
@@ -124,8 +164,11 @@ export default function ContactModal({ modalOpen, onClose, onSuccess }) {
             <Input disabled={load} placeholder={t('placeholders.title')} />
           </Form.Item>
 
-          <Form.Item label={t('fields.key')} name="key" rules={[{ required: true, message: t('placeholders.key') }]}>
-            <Input disabled={load} placeholder={t('placeholders.key')} />
+          <Form.Item label={t('fields.key')} name="key" rules={[{ required: true,  message: t('placeholders.key') }]}>
+            <Input disabled={load} placeholder={t('placeholders.key')} onChange={(e) => {
+              const value = e.target.value.replace(/\s+/g, '');
+              form.setFieldValue('key', value);
+            }} />
           </Form.Item>
 
           <Form.Item label={t('fields.contact_type')} name="type" rules={[{ required: true, message: t('placeholders.contact_type') }]}>
@@ -137,9 +180,9 @@ export default function ContactModal({ modalOpen, onClose, onSuccess }) {
             ]} onChange={onTypeChange}/>
           </Form.Item>
 
-          <Form.Item label={t('fields.value')} name="value" rules={[{ required: true, message: t('placeholders.value') }]}>
+          <Form.Item label={t('fields.value')} name="value" rules={[{ required: true, message: t('placeholders.value') }]} >
             <Input disabled={load} placeholder={t('placeholders.value')} />
-          </Form.Item>
+          </Form.Item> 
 
           <Form.Item
             noStyle
@@ -167,15 +210,15 @@ export default function ContactModal({ modalOpen, onClose, onSuccess }) {
         <Form.Item label={t('fields.icon')} name='icon'>
               <Upload
                 listType="picture-card"
-                fileList={icon ? [icon] : []}
+                fileList={fileList}
                 maxCount={1}
                 disabled={load}
                 accept={'.png,.svg'}
-                beforeUpload={BeforeUpload}
+                beforeUpload={()=> false}
                 onPreview={handlePreview}
-                onChange={handleChange()}
+                onChange={handleChange}
               >
-                {icon ? null : uploadButton}
+                {fileList.length >= 1 ? null : uploadButton}
                 </Upload>
                   {previewImage && (
                   <Image
@@ -187,6 +230,7 @@ export default function ContactModal({ modalOpen, onClose, onSuccess }) {
                     }}
                     src={previewImage}
                   />
+                  
                 )}
           </Form.Item>
       </Form>
