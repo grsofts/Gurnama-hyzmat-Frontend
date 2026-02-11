@@ -1,14 +1,16 @@
 import { Form, Modal, Input, Tabs, Image, Flex, Space, Select, Divider, Switch, Upload, Checkbox, Tooltip, DatePicker, Rate } from "antd";
 import { Info, InfoIcon, LucideInfo, PlusCircleIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import projectService from "../../api/project.service";
 import { toast } from "../../utils/toast";
 import { useTranslation } from "react-i18next";
 import { getBase64 } from "../../utils/utils";
+import dayjs from 'dayjs';
 import 'quill/dist/quill.snow.css';
 import EditorUI from "../../components/ui/EditorUI";
+import http from "../../api/http";
 
-export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) {
+export default function ProjectModal({ modal, onClose, onSuccess }) {
 
   const { t } = useTranslation();
 
@@ -18,6 +20,70 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
   const [images, setImages] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
+  const [removedImages, setRemovedImages] = useState([]);
+
+  useEffect(() => {
+    if (!modal.open) {
+      form.resetFields();
+      setImages([]);
+      setPreviewImage('');
+      setPreviewOpen(false);
+      setRemovedImages([]);
+      setLoad(false);
+      return;
+    }
+
+    const id = modal.id;
+    // Reset preview image when modal is closed
+    if (modal.open && modal.mode === 'edit' && id) {
+
+      const loadProject = async () => {
+        try {
+          const data  = await projectService.getProjectById(id);
+          const tagsArray = data.tags
+                ? data.tags
+                    .split(',')
+                    .map(t => t.trim())
+                    .filter(Boolean)
+                    .map(t => t.startsWith('#') ? t : `#${t}`)
+                : [];
+          form.setFieldsValue({
+            client_name: data.client_name,
+            address: data.address,
+            completed: dayjs(data.completed),
+            tags: tagsArray,
+            rate: data.rate,
+            order: new Number(data.sort_order)
+          });
+           
+          form.setFieldValue('translation', {
+            tm: { title: data.translations.tm.title, short_desc: data.translations.tm.short_desc, full_desc: data.translations.tm.full_desc },
+            ru: { title: data.translations.ru.title, short_desc: data.translations.ru.short_desc, full_desc: data.translations.ru.full_desc },
+            en: { title: data.translations.en.title, short_desc: data.translations.en.short_desc, full_desc: data.translations.en.full_desc },
+          });
+
+          
+          setActive(data.is_active);
+          if (data.images) {
+            const imageList = data.images.map((image, index) => ({
+              uid: index,
+              id: image.id,
+              name: image.name,
+              status: "done",
+              url: http.defaults.baseURL + "/uploads" + image.image_url,
+            }));
+            setImages(imageList);
+          }
+        } catch (error) {
+          console.error("Ошибка загрузки проекта", error);
+        }
+      };
+
+              
+
+      loadProject();
+    }
+  }, [modal, form]);
 
   const handlePreview = async file => {
     if (!file.url && !file.preview) {
@@ -27,12 +93,12 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
     setPreviewOpen(true);
   };
 
-  const handleChange = () => ({ fileList }) => {
+  const handleBeforeUpload = () => false;
+  const handleChange = ({file, fileList }) => {
+    if (file.status === 'removed' && file.id) {
+      setRemovedImages(prev => [...prev, { id: file.id, url: file.url.replace(http.defaults.baseURL + '/uploads', '')}]);
+    }
     setImages(fileList);
-  };
-  const handleBeforeUpload = () => (file) => {
-    setImages([file]);
-    return false; // запрет авто-upload
   };
 
   const handleSubmit = async () => {
@@ -47,17 +113,16 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
       }
       const values = await form.validateFields();
 
-      // return;
-      
-      
       const payload = {
         sort_order: Number(values.order),
         is_active: active,
         client_name: values.client_name,
-        address: values.client_address,
+        address: values.address,
         completed: values.completed.format('YYYY-MM-DD'),
-        tags: values.tags,
-        translations: values.translation
+        tags: values.tags ? values.tags.map(t => t.startsWith("#") ? t : `#${t}`).join(',') : '',
+        rate: values.rate,
+        translations: values.translation,
+        removed_images: removedImages,
       };
 
       const formData = new FormData();
@@ -66,19 +131,22 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
       formData.append('data', JSON.stringify(payload));
 
       // Картинки
-      if (images[0]?.originFileObj) {
-        formData.append('images', images[0].originFileObj);
-      }
+      images.forEach(file => {
+        if (file.originFileObj) {
+          formData.append('images', file.originFileObj);
+        }
+      });
 
       // Отправка формы
-      const result = await projectService.createProject(formData);
-      if (result) {
-        setModalOpen(false);
-        form.resetFields();
-        setImages([]);
-        setActive(true);
+      if(modal.mode === 'edit'){
+        await projectService.updateProject(modal.id, formData);
+        toast.success(t('response_result.project.update'));
+      } else {
+        await projectService.createProject(formData);
         toast.success(t('response_result.project.create'));
       }
+      onClose();
+      onSuccess?.();
     }catch(error){
       const message =
       error?.response?.data?.message ||
@@ -118,10 +186,7 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
       children: (
         <Flex direction="column" gap={2} vertical>
           <Form.Item name={['translation', 'tm', 'title']} rules={[{ required: true, message: t('error_fields.project.name_tm') }]}>
-            <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>{t('fields.name')}</Space.Addon>
               <Input disabled={load} title={t('fields.name')} maxLength={150} showCount name="name" width={'100%'} placeholder={ `${t('placeholders.name')} (TM)`} />
-            </Space.Compact>
           </Form.Item>
 
           <Form.Item name={['translation', 'tm', 'short_desc']}  rules={[{ required: true, message: t('error_fields.service.short_desc_tm') }]}>
@@ -149,10 +214,7 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
       children: (
         <Flex direction="column" gap={1} vertical>
           <Form.Item name={['translation', 'ru', 'title']}  rules={[{ required: true, message: t('error_fields.project.name_ru') }]}>
-            <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>{t('fields.name')}</Space.Addon>
               <Input title={t('fields.name')} disabled={load} maxLength={150} showCount name="name" width={'100%'} placeholder={`${t('placeholders.name')} (RU)`} />
-            </Space.Compact>
           </Form.Item>
 
           <Form.Item name={['translation', 'ru', 'short_desc']}  rules={[{ required: true, message: t('error_fields.service.short_desc_ru') }]}>
@@ -180,10 +242,7 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
       children: (
         <Flex direction="column" gap={2} vertical>
           <Form.Item name={['translation', 'en', 'title']}  rules={[{ required: true, message: t('error_fields.project.name_en') }]}>
-            <Space.Compact style={{ display: 'flex' }}>
-              <Space.Addon>{t('fields.name')}</Space.Addon>
               <Input disabled={load} title={t('fields.name')} maxLength={150} showCount name="name" width={'100%'} placeholder={`${t('placeholders.name')} (EN)`} />
-            </Space.Compact>
           </Form.Item>
 
           <Form.Item name={['translation', 'en', 'short_desc']} rules={[{ required: true, message: t('error_fields.service.short_desc_en') }]}>
@@ -201,9 +260,9 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
 
   return (
     <Modal 
-      title={t('add_project')}
-      open={modalOpen} 
-      onCancel={() => setModalOpen(false)} 
+      title={modal.mode === 'edit' ? t('edit_project') : t('add_project')}
+      open={modal.open} 
+      onCancel={onClose} 
       onOk={handleSubmit}
       centered 
       width={1000}
@@ -213,7 +272,11 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
       closable={false}
       wrapProps={{ onClick: e => e.stopPropagation() }}
       okText={t('buttons.save')}>
-      <p>{t('please_fill_form_project')}</p>
+        {
+          modal.mode === 'add' ? (
+          <p>{t('please_fill_form_project')}</p>
+          ) : null
+        }
       <Form form={form} layout="vertical" initialValues={{ order: 0 }}>
         <Divider />
         <Form.Item  >
@@ -227,8 +290,8 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
            <Form.Item>
             <Space.Compact style={{ display: 'flex' }}>
               <Space.Addon style={{flexShrink: 0}}>{t('fields.client_address')}</Space.Addon>
-              <Form.Item name={'client_address'} noStyle>
-                <Input disabled={load} title={t('fields.client_address')} maxLength={200} showCount name="client_address" width={'100%'} placeholder={`${t('placeholders.client_address')}`} />
+              <Form.Item name={'address'} noStyle>
+                <Input disabled={load} title={t('fields.client_address')} maxLength={200} showCount name="address" width={'100%'} placeholder={`${t('placeholders.client_address')}`} />
               </Form.Item>
             </Space.Compact>
           </Form.Item>
@@ -267,9 +330,9 @@ export default function AddProjectModal({ modalOpen, setModalOpen, onSuccess }) 
               maxCount={5} multiple
               disabled={load}
               accept={'.jpg,.jpeg,.png,.webp'}
-              beforeUpload={handleBeforeUpload()}
+              beforeUpload={handleBeforeUpload}
               onPreview={handlePreview}
-              onChange={handleChange()}
+              onChange={handleChange}
             >
               {images.length >= 5 ? null : uploadButton}
               </Upload>

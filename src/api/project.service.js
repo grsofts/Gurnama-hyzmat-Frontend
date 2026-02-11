@@ -8,7 +8,7 @@ export const ProjectService = {
     return response.data;
   },
   getProjectById: async (id) => {
-    const response = await http.get(`/api/projects/${id}?lang=${lang}`);
+    const response = await http.get(`/api/projects/${id}`);
     return response.data;
   },
   createProject: async (Data) => {

@@ -9,18 +9,18 @@ import { toast } from "../../utils/toast";
 
 import Spacer from "../../components/ui/Spacer";
 import ProjectsTable from "./helper/ProjectsTable";
-import AddProjectModal from "./AddProjectModal";
+import ProjectModal from "./ProjectModal";
 
 export default function Projects() {
   const { t } = useTranslation();
   const { projects, loading, setSearch, filteredData, loadProjects } = useProjects();
 
-  const [modalState, setModalState] = useState({ edit: false, add: false, id: null });
+  const [modalState, setModalState] = useState({ open: false, mode: null, id: null });
 
   // Универсальный обработчик действий (Actions)
   const handleAction = (key, record) => {
     if (key === "edit") {
-      setModalState({ ...modalState, edit: true, id: record.id });
+      setModalState({ ...modalState, open: true, mode: 'edit', id: record.id });
       return;
     }
 
@@ -51,20 +51,18 @@ export default function Projects() {
     });
   };
 
+  const closeModal = () => {
+    setModalState({ open: false, mode: null, id: null });
+  };
+
   return (
     <Flex className="rounded-xl" vertical gap="middle">
       {/* Модальные окна */}
-       <AddProjectModal 
-        modalOpen={modalState.add} 
-        setModalOpen={(val) => setModalState(prev => ({ ...prev, add: val }))} 
+       <ProjectModal 
+        modal={modalState} 
+        onClose={closeModal}
         onSuccess={loadProjects} 
       />
-       {/*<EditServiceModal 
-        id={modalState.id}
-        modalOpen={modalState.edit} 
-        setModalOpen={(val) => setModalState(prev => ({ ...prev, edit: val }))} 
-        onSuccess={loadProjects} 
-      /> */}
 
       {/* Шапка с поиском */}
       <Card styles={{ body: { padding: 16 } }} className="shadow-sm border-0">
@@ -83,7 +81,7 @@ export default function Projects() {
           <Button 
             size="large" 
             type="primary" 
-            onClick={() => setModalState(prev => ({ ...prev, add: true }))}
+            onClick={() => setModalState({ ...modalState, open: true, mode: 'add' })}
           >
             <Plus size={20} />
             {t('buttons.add')}

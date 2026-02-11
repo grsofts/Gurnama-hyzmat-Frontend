@@ -27,11 +27,6 @@ const ProjectsTable = ({ data, loading, onAction, t, totalProjects }) => {
       disabled: totalProjects.filter(b => b.is_active).length === 1 && record.is_active,
     },
   ];
-
-  data.forEach((item, index) => {
-    console.log(index + 1, item.images);
-    
-  });
   return (
     <Table 
       size="small" 
@@ -47,7 +42,7 @@ const ProjectsTable = ({ data, loading, onAction, t, totalProjects }) => {
         width={120} 
         render={(img) => (
           <Image 
-            src={`${http.defaults.baseURL}/uploads/${img[0].image_url}`} 
+            src={`${http.defaults.baseURL}/uploads/${img[0]?.image_url}`} 
             width={100} 
             fallback={placeholder}
             preview={img != undefined}

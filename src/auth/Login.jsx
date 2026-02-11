@@ -15,17 +15,17 @@ const Login = () => {
     const [password, setPassword] = useState("admin");
 
     const onSubmit = async () => {
-    const res = await login(username, password);
-    
-    if (res.success) {
-      toast.success(t('toasts.authorization_successful'));
-      navigate("/banners", { replace: true });
-    }else{
-      toast.warning(t('toasts.login_or_password_invalid'));
-      console.log(res.message);
+      const res = await login(username, password);
       
-    }
-  };
+      if (res.success) {
+        toast.success(t('toasts.authorization_successful'));
+        navigate("/banners", { replace: true });
+      }else{
+        toast.warning(t('toasts.login_or_password_invalid'));
+        console.log(res.message);
+        
+      }
+    };
 
   return (
     <Flex align='center' justify='center' className='h-screen login-container' vertical>

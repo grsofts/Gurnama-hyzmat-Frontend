@@ -24,7 +24,8 @@ export const useProjects = () => {
     const term = search.toLowerCase();
     return projects.filter(item => 
       !term || 
-      item.name?.toLowerCase().includes(term)
+      item.title?.toLowerCase().includes(term)|| 
+      item.short_desc?.toLowerCase().includes(term)
     );
   }, [projects, search]);
 

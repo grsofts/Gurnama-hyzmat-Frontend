@@ -70,7 +70,7 @@ export default function AppHeader({ collapsed, onToggleSidebar }) {
       icon: <Icon component={() => <User2  size={16}/>} />,
       label: t('actions.profile'),
       onClick: () => {
-        setModalState({ ...modalState, mode: 'edit-self', open: true });
+        setModalState({ ...modalState, open:true, mode: 'edit-self' });
       }
     },
     
@@ -94,7 +94,7 @@ export default function AppHeader({ collapsed, onToggleSidebar }) {
         borderBottom: `1px solid ${token.colorBorderSecondary}`,
       }}>
 
-      <ModalProfile open={modalState.open} mode={modalState.mode} userId={modalState.userId} onClose={() =>
+      <ModalProfile modal={modalState} onClose={() =>
         setModalState({ open: false, mode: null, userId: null })
       }  />
 

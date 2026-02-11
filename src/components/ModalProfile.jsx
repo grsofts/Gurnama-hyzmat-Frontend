@@ -5,94 +5,141 @@ import { useEffect, useState } from "react";
 import { toast } from "../utils/toast";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../hooks/useAuth";
+import userService from "../api/users.service"
 
-
-export default function ModalProfile({ open, mode, userId, onClose, onSuccess }) {
+export default function ModalProfile({ modal, onClose, onSuccess }) {
 
   const { t } = useTranslation();
   
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, updateUser } = useAuth();
+  const [ active, setActive ] = useState(false);
+  const [ changePass, setChangePass ] = useState(false);
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
+    if (!modal.open) {
+      form.resetFields();
+      setActive(false);
+      return;
+    }
 
-    if (mode === 'create') {
+    const loadUser = async (id) => {
+      try {
+          setLoading(true);
+          const data = await userService.getUserById(id);
+          const user = data[0];
+          form.setFieldsValue({
+            login:user.login,
+            name:user.name
+          });
+          setActive(user.is_active)
+      } finally {
+          setLoading(false);
+      }
+    };
+
+    if (modal.mode === 'create') {
       form.resetFields();
       return;
     }
 
-    if (mode === 'edit-self') {
-      form.setFieldsValue(currentUser);
+    if (modal.mode === 'edit-self') {
+      form.setFieldsValue({
+        login:currentUser.username,
+        name:currentUser.name,
+      });
+      setActive(true);
       return;
     }
 
-    if (mode === 'edit-user' && userId) {
-      loadUser(userId);
+    if (modal.mode === 'edit-user' && modal.userId) {
+      loadUser(modal.userId);
     }
-  }, [open, mode, userId]);
-
-  const loadUser = async (id) => {
-    try {
-        setLoading(true);
-        // const { data } = await usersService.getById(id);
-        // form.setFieldsValue(data);
-    } finally {
-        setLoading(false);
-    }
-    };
-
+  }, [modal, currentUser, setActive, form]);
 
   const handleSubmit = async () => {
     try{
       try {
         await form.validateFields();
-        setLoad(true);
+        setLoading(true);
       } catch {
         // есть ошибки
         toast.info(t('toasts.fields_required'));
         return;
       }
+
       const values = await form.validateFields();
-      
+
+
+      if(changePass){
+        const password = values.password;
+        const verify = values.password_verify;
+        
+        if(password != verify){
+          toast.warning(t('toasts.password_verify_error'));
+          return;
+        }
+        
+        if(password.length <= 5){
+          toast.warning(t('toasts.password_length'));
+          return;
+        }
+      }
+
       const payload = {
-        name: values.name,
-        received: values.received ? values.received.format('YYYY-MM-DD') : null,
-        expired: values.expired ? values.expired.format('YYYY-MM-DD') : null,
-      };
-
-      const formData = new FormData();
-
-      // JSON как string
-      formData.append('data', JSON.stringify(payload));
-
+          name: values.name,
+          login: values.login,
+          is_active: active,
+          password: values.password
+        };
       // Отправка формы
-    //   const result = await certService.createCertificate(formData);
-    //   if (result) {
-    //     setModalOpen(false);
-    //     form.resetFields();
-    //     toast.success(t('response_result.certificate.create'));
-    //   }
+      if(modal.mode === 'create'){
+        await userService.createUser(payload);
+        toast.success(t('response_result.user.create'));
+      }else{
+        const id = modal.mode === 'edit-self' ? currentUser.id : modal.userId;
+        await userService.updateUser(payload, id, currentUser.username);
+        toast.success(t('response_result.user.update'));
+
+        if(modal.mode === 'edit-self'){
+          //
+          updateUser({
+            name: values.name
+          })
+        }else if(modal.mode === 'edit-user'){
+          if(values.login === currentUser.username){
+            updateUser({
+              name: values.name
+            })
+          }
+        }
+      }
+      onClose();
+      onSuccess?.();
     }catch(error){
       const message =
       error?.response?.data?.message ||
       error?.response?.data?.error ||
-      'Server error';
+      'Server error:' + error;
       toast.warning(message);
     }finally{
       if (onSuccess) {
           onSuccess(); 
         }
-      setLoad(false);
+      setLoading(false);
     }
+  };
+
+  const onChangePass = e => {
+    setChangePass(e.target.checked);
   };
 
   return (
     <Modal 
-      title={t('actions.profile')}
-      open={open} 
+      title={modal.mode==='create' ? t('add_user') : modal.mode === 'edit-user' ? t('edit_user') : t('actions.profile')}
+      open={modal.open} 
       onCancel={onClose} 
       onOk={handleSubmit}
       centered 
@@ -106,21 +153,36 @@ export default function ModalProfile({ open, mode, userId, onClose, onSuccess })
         
         <Divider />
         <Flex direction="column" gap={7} vertical>
-          <Form.Item label={t('fields.user_name')} name="name" rules={[{ required: true, message: t('error_fields.certificate.name') }]}>
+          <Form.Item label={t('login')} name="login" rules={[{ required: true, message: t('error_fields.auth.login') }]}>
+            <Input disabled={modal.mode != 'create'} placeholder={t('login')} />
+          </Form.Item>
+          <Form.Item label={t('fields.user_name')} name="name" rules={[{ required: true, message: t('error_fields.user.name') }]}>
             <Input disabled={loading} placeholder={t('fields.user_name')} />
           </Form.Item>
+
         </Flex>
 
         <Divider variant="solid"/>
         <h3>{t('fields.user_password')}</h3>
-        <Flex direction="column" gap={7} horizontal>
-            <Form.Item label={t('fields.password')} name="received" rules={[{ required: true, message: t('error_fields.certificate.received') }]}>
+        <Checkbox onChange={onChangePass} checked={changePass}>{t('change_pass')}</Checkbox>
+        {
+          changePass && (
+          <Flex direction="column" style={{marginTop:12}} gap={7} horizontal>
+            <Form.Item label={t('fields.password')} name="password" rules={[{ required: changePass, message: t('error_fields.user.password') }]}>
               <Input disabled={loading} placeholder={t('fields.password')} />
             </Form.Item>
-            <Form.Item label={t('fields.user_password_confirm')} name="expired" rules={[{ required: true, message: t('error_fields.certificate.expired') }]}>
+            <Form.Item label={t('fields.user_password_confirm')} name="password_verify" rules={[{ required: changePass, message: t('error_fields.user.verify') }]}>
               <Input disabled={loading} placeholder={t('fields.user_password_confirm')} />
             </Form.Item>
-        </Flex>
+        </Flex>)
+        }
+        
+        {
+          modal.mode != 'edit-self' && (
+          <Flex direction="column" style={{marginTop:45}} gap={5} horizontal>
+            <Switch checked={active} onChange={setActive} disabled={loading} /> <span>{t('status.active')}</span>
+          </Flex>        
+          )}
 
       </Form>
     </Modal>

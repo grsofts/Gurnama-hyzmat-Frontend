@@ -39,11 +39,18 @@ export const AuthProvider = ({ children }) => {
     const login = async (login, password) => {
         try {
             const response = await loginService.login({ login, password });
-            if(response.accessToken){
-                await checkAuth();
-            }
-            // setUser(response);
-            return { success: true };
+            
+            if(response.status === 200){
+                if(response.data.accessToken){
+                    await checkAuth();
+                }
+                return { success: true };
+            }else{
+                return { 
+                success: false, 
+                message: 'Ошибка авторизации' 
+            };
+            }   
         } catch (error) {
             return { 
                 success: false, 
@@ -51,6 +58,14 @@ export const AuthProvider = ({ children }) => {
             };
         }
     };
+
+    const updateUser = (updatedData) => {
+        setUser(prev => ({
+            ...prev,
+            ...updatedData
+        }));
+    };
+
 
     const logout = () => {
         localStorage.removeItem('accessToken');
@@ -60,7 +75,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

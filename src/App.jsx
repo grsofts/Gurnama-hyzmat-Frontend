@@ -17,7 +17,6 @@ import Settings from './pages/settings/Setting';
 import ProtectedRoute from './auth/ProtectedRoute';
 
 function App() {
-  
   return (
      <Routes>
       {/* PUBLIC */}

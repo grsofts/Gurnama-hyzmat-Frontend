@@ -146,6 +146,11 @@
       "received": "Alynan senesini saýlaň",
       "expired": "Gutarýan senäni saýlaň"
     },
+    "user":{
+      "name":"Ulanyjy adyny ýazyň",
+      "password":"Täze açar sözuni ýazyň",
+      "verify":"Açar sözüni tassyklaň"
+    },
     "about": {
       "short_text_tm": "Türkmençe \"Biz barada\" gysga tekstini ýazyň",
       "short_text_en": "Iňlisçe \"Biz barada\" gysga tekstini ýazyň",
@@ -199,13 +204,20 @@
       "create": "Kontakt goşuldy",
       "update": "Kontakt üýtgedildi",
       "delete": "Kontakt ýok edildi"
+    },
+    "user":{
+      "create":"Ulanyjy goşuldy",
+      "update":"Ulanyjy maglumatlary ýatda saklanyldy",
+      "delete":"Ulanyjy ýok edildi"
     }
   },
   "toasts": {
     "fields_required": "Ähli zerur öýjükleri doldurmagypyzy haýyş edýäris",
     "login_or_password_invalid": "Nädogry ulanyjy ady ýa-da açar sözi",
     "error_occurred": "Nädogrylyk ýüze çykdy, täzeden synanyşyň",
-    "authorization_successful": "Siz sistema girdiňiz."
+    "authorization_successful": "Siz sistema girdiňiz.",
+    "password_verify_error":"Açar sözi tassyklama deň däl!",
+    "password_length":"Örän gysga açar sözi"
   },
   "tooltips": {
     "custom_link": "Başga saýt - ulanyjy bannere basanda saýtdan siziň bellän linkiňize ugradylar, eger-de ýok bolsa, standart linke ugradylar"
@@ -222,10 +234,13 @@
   "add_project": "Taslama goşmak",
   "add_service": "Hyzmat goşmak",
   "add_contact": "Kontakt goşmak",
+  "add_user":"Ulanyjy goşmak",
+  "edit_user":"Ulanyjy maglumatyny üýtgetmek",
   "authorization": "Içine girmek",
-  "login": "Ulanyjy ady",
+  "login": "Login",
   "password": "Açar sözi",
   "remember_me": "Meni ýatda sakla",
+  "change_pass": "Açar sözüni üýtgetmek",
   "please_fill_form_slider": "Täze slider goşmak üçin maglumatlary giriziň",
   "please_fill_form_service": "Täze hyzmat goşmak üçin maglumatlary giriziň",
   "please_fill_form_banner": "Täze banner goşmak üçin maglumatlary giriziň",
