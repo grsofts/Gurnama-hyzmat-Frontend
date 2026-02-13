@@ -8,7 +8,7 @@ export const PartnerService = {
     return response.data;
   },
   getPartnerById: async (id) => {
-    const response = await http.get(`/api/partners/${id}?lang=${lang}`);
+    const response = await http.get(`/api/partners/${id}`);
     return response.data;
   },
   createPartner: async (Data) => {

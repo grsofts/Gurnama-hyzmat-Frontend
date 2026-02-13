@@ -62,30 +62,30 @@ export default function Users() {
         <Flex gap={"middle"} className="p-3 w-full" vertical>
           <Flex gap={"large"} align={"center"}>
               <Typography.Title level={4} style={{ margin: 0 }} strong>
-                Ulanyjylar
+                {t('menu.users')}
               </Typography.Title>
               <div className="flex-1"/>
-              <Button onClick={() => setModal({ ...modal, open: true, mode: 'create' })} size="large" color="primary" className="gap-0.5" variant="solid"><PlusIcon/><span>Täze ulanyjy goş</span></Button>
+              <Button onClick={() => setModal({ ...modal, open: true, mode: 'create' })} size="large" color="primary" className="gap-0.5" variant="solid"><PlusIcon/><span>{t('buttons.add')}</span></Button>
           </Flex>
         <Table size="small" bordered="true" dataSource={users} pagination={{ hideOnSinglePage: true }} loading={loading} showSorterTooltip={{ target: 'sorter-icon' }}>
-            <Column title="Login" dataIndex="login" key="login" sorter={(a, b) => a.login.length - b.login.length} showSorterTooltip={{ title: 'Login boýunça tertiple', placement: 'top', color: 'blue', target: 'full-header' }} />
-            <Column title="Ulanyjy ady" dataIndex="name" key="username" />
-            <Column title="Status" dataIndex="is_active" key="is_active" render={(status) => (status ? <Tag color="green" variant="outlined">Aktiw</Tag> : <Tag color="red" variant="outlined">Öçük</Tag>)} />
+            <Column title={t('login')} dataIndex="login" key="login" />
+            <Column title={t('fields.user_name')} dataIndex="name" key="username" />
+            <Column title={t('column.status')} dataIndex="is_active" key="is_active" render={(status) => (status ? <Tag color="green" variant="outlined">{t('status.active')}</Tag> : <Tag color="red" variant="outlined">{t('status.inactive')}</Tag>)} />
             
-            <Column title="Doredildi" dataIndex="createdAt" key="created" render={(val) => formatDateTime(val)} />
-            <Column title="Üýtgedildi" dataIndex="updatedAt" key="updated" render={(val) => formatDateTime(val)} />
-            <Column title="Hereketler" key="actions" render={(_, record) => (
+            <Column title={t('column.created_at')} dataIndex="createdAt" key="created" render={(val) => formatDateTime(val)} />
+            <Column title={t('column.updated_at')} dataIndex="updatedAt" key="updated" render={(val) => formatDateTime(val)} />
+            <Column title={t('column.action')} key="actions" render={(_, record) => (
                <Dropdown
                   menu={{
                   items: [
                     {
                       key: "edit",
-                      label: "Üýtgetmek",
+                      label: t('actions.edit'),
                       icon: <Pencil size={16}/>,
                     },
                     {
                       key: "delete",
-                      label: "Ýok etmek",
+                      label: t('actions.delete'),
                       icon: <Trash size={16}/>,
                       danger: true,
                       disabled: record.login === "admin",

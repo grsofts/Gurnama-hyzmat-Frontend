@@ -9,19 +9,18 @@ import { toast } from "../../utils/toast";
 
 import Spacer from "../../components/ui/Spacer";
 import PartnerTable from "./helper/PartnerTable";
-import AddPartnerModal from "./AddPartnerModal";
-import EditPartnerModal from "../partners/EditPartnerModal";
+import PartnerModal from "./PartnerModal";
 
 export default function Partners() {
   const { t } = useTranslation();
   const { partners, loading, setSearch, filteredData, loadPartners } = usePartners();
 
-  const [modalState, setModalState] = useState({ edit: false, add: false, id: null });
+  const [modalState, setModalState] = useState({ mode:null, open: false, id: null });
 
   // Универсальный обработчик действий (Actions)
   const handleAction = (key, record) => {
     if (key === "edit") {
-      setModalState({ ...modalState, edit: true, id: record.id });
+      setModalState({ ...modalState, mode:'edit', open: true, id: record.id });
       return;
     }
 
@@ -55,15 +54,9 @@ export default function Partners() {
   return (
     <Flex className="rounded-xl" vertical gap="middle">
       {/* Модальные окна */}
-       <AddPartnerModal 
-        modalOpen={modalState.add}
-        setModalOpen={(val) => setModalState(prev => ({ ...prev, add: val }))}
-        onSuccess={loadPartners}
-      />
-       <EditPartnerModal
-        id={modalState.id}
-        modalOpen={modalState.edit}
-        setModalOpen={(val) => setModalState(prev => ({ ...prev, edit: val }))}
+       <PartnerModal 
+        modal={modalState}
+        onClose={() => setModalState(prev => ({ ...prev, open: false, mode: null, id: null }))}
         onSuccess={loadPartners}
       />
 
@@ -84,7 +77,7 @@ export default function Partners() {
           <Button 
             size="large" 
             type="primary" 
-            onClick={() => setModalState(prev => ({ ...prev, add: true }))}
+            onClick={() => setModalState(prev => ({ ...prev, open:true, mode:'create'}))}
           >
             <Plus size={20} />
             {t('buttons.add')}

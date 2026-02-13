@@ -1,13 +1,14 @@
-import { Form, Modal, Input, Tabs, Image, Flex, Space, Divider, Switch, Upload, Checkbox, Tooltip, DatePicker } from "antd";
-import { Info, InfoIcon, LucideInfo, PlusCircleIcon } from "lucide-react";
-import { useState } from "react";
+import { Form, Modal, Input, Image, Flex, Divider, Switch, Upload} from "antd";
+import { PlusCircleIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import partnerService from "../../api/partner.service";
 import { toast } from "../../utils/toast";
 import { useTranslation } from "react-i18next";
 import { getBase64 } from "../../utils/utils";
+import http from "../../api/http";
 
 
-export default function AddPartnerModal({ modalOpen, setModalOpen, onSuccess }) {
+export default function PartnerModal({ modal, onClose, onSuccess }) {
 
   const { t } = useTranslation();
 
@@ -18,6 +19,41 @@ export default function AddPartnerModal({ modalOpen, setModalOpen, onSuccess }) 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
 
+  useEffect(()=>{
+    if(!modal.open){
+      form.resetFields();
+      setImages([]);
+      setActive(false);
+    }
+
+    if(modal.mode ==='edit' && modal.id){
+      //
+      const loadPartner = async () => {
+        try {
+          const data  = await partnerService.getPartnerById(modal.id);
+          
+          form.setFieldsValue({
+            name: data.name,
+            link: data.link,
+            sort_order: new Number(data.sort_order)
+          });
+          
+          setActive(data.is_active);
+          if (data.image) {
+            setImages([{
+              uid: '-1',
+              status: "done",
+              url: http.defaults.baseURL + "/uploads" + data.image,
+            }]);
+          }
+        } catch (error) {
+          console.error("Ошибка загрузки проекта", error);
+        }
+      };
+
+      loadPartner();
+    }
+  },[modal, form])
 
   const handlePreview = async file => {
     if (!file.url && !file.preview) {
@@ -49,7 +85,9 @@ export default function AddPartnerModal({ modalOpen, setModalOpen, onSuccess }) 
       
       const payload = {
         is_active: active,
+        sort_order: Number(values.sort_order),
         name: values.name,
+        link: values.link
       };
 
       const formData = new FormData();
@@ -63,14 +101,17 @@ export default function AddPartnerModal({ modalOpen, setModalOpen, onSuccess }) 
       }
 
       // Отправка формы
-      const result = await partnerService.createPartner(formData);
-      if (result) {
-        setModalOpen(false);
-        form.resetFields();
-        setImages([]);
-        setActive(true);
-        toast.success(t('response_result.partner.create'));
+      if(modal.mode === 'crete'){
+        //create
+        await partnerService.createPartner(formData);
+      }else{
+        //update
+        await partnerService.updatePartner(modal.id, formData);
       }
+      
+      toast.success(t(modal.mode === 'create' ?'response_result.partner.create':'response_result.partner.update'));
+      onClose();
+      onSuccess?.();
     }catch(error){
       const message =
       error?.response?.data?.message ||
@@ -96,9 +137,9 @@ export default function AddPartnerModal({ modalOpen, setModalOpen, onSuccess }) 
 
   return (
     <Modal 
-      title={t('add_partner')}
-      open={modalOpen} 
-      onCancel={() => setModalOpen(false)} 
+      title={modal.mode === 'create' ? t('add_partner') : t('edit_partner')}
+      open={modal.open} 
+      onCancel={onClose} 
       onOk={handleSubmit}
       centered 
       cancelButtonProps={{hidden:load}}
@@ -107,13 +148,20 @@ export default function AddPartnerModal({ modalOpen, setModalOpen, onSuccess }) 
       closable={false}
       wrapProps={{ onClick: e => e.stopPropagation() }}
       okText={t('buttons.save')}>
-      <p>{t('please_fill_form_certificate')}</p>
+        {
+          modal.mode === 'create' && (
+            <p>{t('please_fill_form_certificate')}</p>)
+        }
       <Form form={form} layout="vertical" initialValues={{ order: 0 }}>
         
         <Divider />
         <Flex direction="column" gap={7} vertical>
           <Form.Item label={t('fields.name')} name="name" rules={[{ required: true, message: t('error_fields.certificate.name') }]}>
             <Input disabled={load} placeholder={t('placeholders.name')} />
+          </Form.Item>
+
+           <Form.Item label={t('placeholders.partner_link')} name="link">
+            <Input disabled={load} placeholder={t('placeholders.partner_link')} />
           </Form.Item>
         </Flex>
 
@@ -143,9 +191,9 @@ export default function AddPartnerModal({ modalOpen, setModalOpen, onSuccess }) 
             )}
         </Form.Item>
 
-        <Flex direction="column" gap={7} horizontal>
-           
-        </Flex>
+        <Form.Item label={t('fields.order')} name="sort_order">
+          <Input disabled={load} placeholder={t('placeholders.order')} type="number"/>
+        </Form.Item>
 
         <Flex direction="column" gap={5} horizontal>
           <Switch checked={active} onChange={setActive} disabled={load} /> <span>{t('status.active')}</span>
